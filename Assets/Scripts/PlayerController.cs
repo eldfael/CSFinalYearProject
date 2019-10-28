@@ -14,8 +14,8 @@ public class PlayerController : MonoBehaviour
     
     public float movespeed = 5.0f;
     
-    public float rollspeed = 8f;
-    public float rolltime = 0.4f; // 0.5 per second (for some reason im not sure yet..)
+    public float rollspeed = 9f;
+    public float rolltime = 0.5f; // 0.5 per second (for some reason im not sure yet..)
     public float timercount = 0.0f;
     public bool rolling = false;
 
