@@ -4,64 +4,151 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // Component Decleration
     Rigidbody2D rb;
-    
     SpriteRenderer sprRenderer;
+    Camera mainCamera;
+    public GameObject projectile;
+
+    // Sprite Decleration
     public Sprite defaultSprite;
     public Sprite rollingSprite;
 
-    public Vector2 direction;
-    
-    public float movespeed = 5.0f;
-    
-    public float rollspeed = 9f;
-    public float rolltime = 0.5f; // 0.5 per second (for some reason im not sure yet..)
-    public float timercount = 0.0f;
-    public bool rolling = false;
+    // Movement Decleration
+    public Vector2 playerDirection;
+    public float MOVEMENT_SPEED = 5.0f;
+
+    // Rolling Decleration
+    public float ROLLING_SPEED = 9.0f;
+    public float ROLLING_DURATION = 0.5f; // 0.5 per second (for some reason im not sure yet..)
+
+    public float rollingTimer = 0.0f;
+    public bool rollingKeyDown;
+    public bool isRolling = false;
+
+    // Attacking Decleration
+    public float PROJECTILE_SPEED = 7.5f;
+    public float PROJECTILE_INTERVAL = 1f;
+
+    public float attackingTimer = 0.0f;
+    public bool attackingKeyHeld;
+    public bool isAttacking = false;
+
+    public float SPRITE_OFFSET = 90f;
+
+    // Inputs Decleration
+    public Vector2 mousePosition;
+    public Vector2 keyboardDirection;
+
+    // Key Decleration
+    public KeyCode rollingKey = KeyCode.Mouse1;
+    public KeyCode attackingKey = KeyCode.Mouse0;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
     }
+
+    void Awake()
+    {
+        mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+    }
     void Update()
     {
-        if (!rolling)
-        {
-            direction = getDirection().normalized; // get direction and normalize that vector so that each direction moves at equal speeds
-        }
-        if (direction.magnitude != 0 && Input.GetKeyDown("space")) 
-        {
-            rolling = true;
-            sprRenderer.sprite = rollingSprite;
-        }
-        
-
+        handleInput();
+        handleRolling();
     }
-
     void FixedUpdate()
     {
-        
-
-        if (rolling) 
+        handleMovement();
+        handleCamera();
+        handleAttacking();
+    }
+    private void handleMovement() { 
+        if (!isRolling) 
         {
-            timercount += Time.fixedDeltaTime;
-            rb.velocity = direction * rollspeed;
-            
+            rb.velocity = playerDirection * MOVEMENT_SPEED;
         }
         else 
         {
-            rb.velocity = direction * movespeed;    
+            rollingTimer += Time.fixedDeltaTime;
+            rb.velocity = playerDirection * ROLLING_SPEED;
         }
         
-        if (timercount >= rolltime)
+        if (rollingTimer >= ROLLING_DURATION)
         {
-            timercount = 0;
-            rolling = false;
+            isRolling = false;
             sprRenderer.sprite = defaultSprite; 
         }
     }
-    Vector2 getDirection() {
-        return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+    private void handleCamera() {
+        mainCamera.transform.position = new Vector3(
+            (transform.position.x * 2.5f + mousePosition.x)/3.5f,
+            (transform.position.y * 2.5f + mousePosition.y)/3.5f,
+            -100);
     }
+
+    private void handleInput() {
+        keyboardDirection = new Vector2(
+            Input.GetAxisRaw("Horizontal"), 
+            Input.GetAxisRaw("Vertical"));
+        
+        mousePosition = mainCamera.ScreenToWorldPoint(new Vector2(
+            Mathf.Clamp(Input.mousePosition.x, 0, Screen.width), 
+            Mathf.Clamp(Input.mousePosition.y, 0, Screen.height)));
+        
+        rollingKeyDown = Input.GetKeyDown(rollingKey);
+        attackingKeyHeld = Input.GetKey(attackingKey);
+    }
+
+    private void handleRolling() { 
+        if (!isRolling)
+        {
+            playerDirection = keyboardDirection.normalized; // get direction and normalize that vector so that each direction moves at equal speeds
+        }
+        if (playerDirection.magnitude != 0 && rollingKeyDown) 
+        {
+            isRolling = true;
+            rollingTimer = 0.0f;
+
+            sprRenderer.sprite = rollingSprite;
+        }
+    }
+
+    private void handleAttacking() {
+        if (!isAttacking && !isRolling && attackingKeyHeld) {
+
+            GameObject tempProjectile = Instantiate(projectile,transform.position,Quaternion.identity);
+
+            tempProjectile.GetComponent<ProjectileController>().creator = gameObject;
+            tempProjectile.GetComponent<ProjectileController>().velocity = (mousePosition - new Vector2(transform.position.x,transform.position.y)).normalized * PROJECTILE_SPEED;
+            
+            tempProjectile.GetComponent<Transform>().Rotate(0,0, Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x) * Mathf.Rad2Deg + SPRITE_OFFSET, Space.Self);
+
+            isAttacking = true;
+            attackingTimer = 0.0f;
+        }
+        if (isAttacking) 
+        {
+            attackingTimer += Time.fixedDeltaTime;
+        }
+        if (attackingTimer >= PROJECTILE_INTERVAL) 
+        {
+            isAttacking = false;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Projectile") {
+            if (!collision.GetComponent<ProjectileController>().creator.Equals(gameObject))
+            {
+                // Take Damage
+            }
+        }   
+    }
+    
 }
