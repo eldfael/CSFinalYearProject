@@ -20,9 +20,9 @@ public class ProjectileController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.Equals(creator))
+        if (collision.gameObject.Equals(creator) || collision.tag.Equals("Projectile"))
         {
-            //Destroy(gameObject);
+            // Do not destroy on collision with self or objects with tag projectile
         }
         else
         {

@@ -120,22 +120,23 @@ MonoBehaviour:
     type: 3}
   defaultSprite: {fileID: 21300000, guid: 456ee03e40ce75f4d92b707500031ec8, type: 3}
   rollingSprite: {fileID: 21300000, guid: 13aeec80013ab87498a023df41bd4064, type: 3}
-  movementDirection: {x: 0, y: 0}
-  movespeed: 5
-  rollspeed: 8
-  rolltime: 0.4
-  rolltimercount: 0
-  rollKeyPressed: 0
-  rolling: 0
-  projectilespeed: 7.5
-  attackinterval: 0.3
-  attacktimercount: 0
-  attackKeyPressed: 0
-  attacking: 0
+  playerDirection: {x: 0, y: 0}
+  MOVEMENT_SPEED: 5
+  ROLLING_SPEED: 9
+  ROLLING_DURATION: 0.5
+  rollingTimer: 0
+  rollingKeyDown: 0
+  isRolling: 0
+  PROJECTILE_SPEED: 15
+  PROJECTILE_INTERVAL: 0.5
+  attackingTimer: 0
+  attackingKeyHeld: 0
+  isAttacking: 0
+  SPRITE_OFFSET: 90
   mousePosition: {x: 0, y: 0}
   keyboardDirection: {x: 0, y: 0}
-  rollKey: 0
-  attackKey: 0
+  rollingKey: 324
+  attackingKey: 323
 --- !u!61 &211922380
 BoxCollider2D:
   m_ObjectHideFlags: 0
