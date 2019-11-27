@@ -139,6 +139,7 @@ public class PlayerController : MonoBehaviour
             GameObject tempProjectile = Instantiate(projectile,transform.position,Quaternion.identity);
 
             tempProjectile.GetComponent<ProjectileController>().creator = gameObject;
+            tempProjectile.GetComponent<ProjectileController>().playerProjectile = true;
             tempProjectile.GetComponent<ProjectileController>().projectileDamage = 2;
             tempProjectile.GetComponent<ProjectileController>().velocity = (mousePosition - new Vector2(transform.position.x,transform.position.y)).normalized * PROJECTILE_SPEED;
             
@@ -163,18 +164,20 @@ public class PlayerController : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Projectile") {
-            if (!collision.GetComponent<ProjectileController>().creator.Equals(gameObject))
-            {
-                stat_CurrentHP -= collision.GetComponent<ProjectileController>().projectileDamage;
-                Debug.Log("Player takes damage");
-                if (stat_CurrentHP < 1)
+        if (!isRolling) { 
+            if (collision.gameObject.tag == "Projectile") {
+                if (!collision.GetComponent<ProjectileController>().creator.Equals(gameObject))
                 {
-                    // Player Dies
-                    Destroy(gameObject);
+                    stat_CurrentHP -= collision.GetComponent<ProjectileController>().projectileDamage;
+                    Debug.Log("Player takes damage");
+                    if (stat_CurrentHP < 1)
+                    {
+                        // Player Dies
+                        Destroy(gameObject);
+                    }
                 }
             }
-        }   
+        }
     }
     
 }

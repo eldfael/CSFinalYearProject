@@ -59,7 +59,7 @@ public class BasicEnemyController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Projectile")
         {
-            if (!collision.GetComponent<ProjectileController>().creator.Equals(gameObject))
+            if (!collision.GetComponent<ProjectileController>().creator.Equals(gameObject) && collision.GetComponent<ProjectileController>().playerProjectile == true)
             {
                 stat_CurrentHP -= collision.GetComponent<ProjectileController>().projectileDamage;
                 Debug.Log("Enemy takes damage");

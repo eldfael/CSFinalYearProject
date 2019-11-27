@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 5042250273980208094}
   - component: {fileID: 5042250273980208089}
   m_Layer: 0
-  m_Name: WallShooter_E
-  m_TagString: Untagged
+  m_Name: BasicEnemy
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,3 +121,5 @@ MonoBehaviour:
   PROJECTILE_SPEED: 10
   ATTACKING_INTERVAL: 2
   PROJECTILE_SPRITE_OFFSET: 90
+  stat_MaxHP: 0
+  stat_CurrentHP: 0

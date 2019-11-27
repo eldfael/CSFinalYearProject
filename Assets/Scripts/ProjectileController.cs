@@ -6,6 +6,7 @@ public class ProjectileController : MonoBehaviour
 {
     public Vector2 velocity;
     public GameObject creator;
+    public bool playerProjectile;
     public Rigidbody2D rb;
     public int projectileDamage;
 
@@ -21,15 +22,26 @@ public class ProjectileController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.Equals(creator) || collision.tag.Equals("Projectile"))
+        // Do not destroy on collision with self or objects with tag projectile
+        if (!collision.gameObject.Equals(creator) && !collision.tag.Equals("Projectile"))
         {
-            // Do not destroy on collision with self or objects with tag projectile
-        }
-        else
-        {
-            Destroy(gameObject);
+            if (collision.tag.Equals("Player")) 
+            { 
+                if (collision.TryGetComponent<PlayerController>(out PlayerController p) == true && p.isRolling == false) 
+                {
+                    Destroy(gameObject);
+                }
+            }
+            if (collision.tag.Equals("Enemy")) 
+            {
+                if (playerProjectile == true)
+                {
+                    Destroy(gameObject);
+                }
+            }
         }
         
     }
+
 
 }
