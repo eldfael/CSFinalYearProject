@@ -56,6 +56,9 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sprRenderer = GetComponent<SpriteRenderer>();
+        
+        stat_MaxHP = 10;
+        stat_CurrentHP = stat_MaxHP;
     }
 
     void Awake()
@@ -65,13 +68,22 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         handleInput();
+
         handleRolling();
     }
     void FixedUpdate()
     {
+        if (stat_CurrentHP < 1)
+        {
+            Destroy(gameObject);
+        }
+
         handleCamera();
+
         handleMovement();
+
         handleAttacking();
+
         handleTimers();
     }
     private void handleMovement() 
@@ -127,6 +139,7 @@ public class PlayerController : MonoBehaviour
             GameObject tempProjectile = Instantiate(projectile,transform.position,Quaternion.identity);
 
             tempProjectile.GetComponent<ProjectileController>().creator = gameObject;
+            tempProjectile.GetComponent<ProjectileController>().projectileDamage = 2;
             tempProjectile.GetComponent<ProjectileController>().velocity = (mousePosition - new Vector2(transform.position.x,transform.position.y)).normalized * PROJECTILE_SPEED;
             
             tempProjectile.GetComponent<Transform>().Rotate(0,0, Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x) * Mathf.Rad2Deg + PROJECTILE_SPRITE_OFFSET, Space.Self);
@@ -153,7 +166,13 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Projectile") {
             if (!collision.GetComponent<ProjectileController>().creator.Equals(gameObject))
             {
-                Debug.Log("Damage");
+                stat_CurrentHP -= collision.GetComponent<ProjectileController>().projectileDamage;
+                Debug.Log("Player takes damage");
+                if (stat_CurrentHP < 1)
+                {
+                    // Player Dies
+                    Destroy(gameObject);
+                }
             }
         }   
     }

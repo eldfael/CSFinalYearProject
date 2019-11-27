@@ -7,6 +7,7 @@ public class ProjectileController : MonoBehaviour
     public Vector2 velocity;
     public GameObject creator;
     public Rigidbody2D rb;
+    public int projectileDamage;
 
     private void Start()
     {
