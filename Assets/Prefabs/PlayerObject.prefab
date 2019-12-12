@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6768939979656863616}
   - component: {fileID: 7069619914815484616}
   - component: {fileID: 211922380}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PlayerObject
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -120,10 +120,14 @@ MonoBehaviour:
     type: 3}
   defaultSprite: {fileID: 21300000, guid: 456ee03e40ce75f4d92b707500031ec8, type: 3}
   rollingSprite: {fileID: 21300000, guid: 13aeec80013ab87498a023df41bd4064, type: 3}
-  playerDirection: {x: 0, y: 0}
+  stat_MaxHP: 0
+  stat_CurrentHP: 0
+  stat_MaxSTA: 0
+  stat_CurrentSTA: 0
   MOVEMENT_SPEED: 5
   ROLLING_SPEED: 9
   ROLLING_DURATION: 0.5
+  rollingDirection: {x: 0, y: 0}
   rollingTimer: 0
   rollingKeyDown: 0
   isRolling: 0
@@ -132,7 +136,7 @@ MonoBehaviour:
   attackingTimer: 0
   attackingKeyHeld: 0
   isAttacking: 0
-  SPRITE_OFFSET: 90
+  PROJECTILE_SPRITE_OFFSET: 90
   mousePosition: {x: 0, y: 0}
   keyboardDirection: {x: 0, y: 0}
   rollingKey: 324

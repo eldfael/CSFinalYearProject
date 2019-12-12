@@ -20,10 +20,11 @@ public class ProjectileController : MonoBehaviour
         //transform.position = new Vector2(transform.position.x, transform.position.y) + velocity;
     }
 
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Do not destroy on collision with self or objects with tag projectile
-        if (!collision.gameObject.Equals(creator) && !collision.tag.Equals("Projectile"))
+        // Do not destroy on collision with self
+        if (!collision.gameObject.Equals(creator))
         {
             if (collision.tag.Equals("Player")) 
             { 
@@ -40,8 +41,14 @@ public class ProjectileController : MonoBehaviour
                 }
             }
         }
+        if (collision.tag.Equals("Wall"))
+        {
+            Destroy(gameObject);
+        }
+        
         
     }
+    
 
 
 }

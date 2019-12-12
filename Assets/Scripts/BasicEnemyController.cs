@@ -5,10 +5,14 @@ using UnityEngine;
 public class BasicEnemyController : MonoBehaviour
 {
     public GameObject projectile;
-    public Vector2 DIRECTION;
+    public GameObject player;
+
+    public Vector2 direction;
     public float PROJECTILE_SPEED;
     public float ATTACKING_INTERVAL;
     public float PROJECTILE_SPRITE_OFFSET = 90;
+
+    public float playerDistance;
 
     public int stat_MaxHP;
     public int stat_CurrentHP;
@@ -20,24 +24,31 @@ public class BasicEnemyController : MonoBehaviour
         isAttacking = false;
         stat_MaxHP = 10;
         stat_CurrentHP = stat_MaxHP;
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void FixedUpdate()
     {
-        if (stat_CurrentHP < 1)
+        if (stat_CurrentHP <= 0)
         {
             // Enemy Dies
             Destroy(gameObject);
         }
 
-        if (!isAttacking) 
+        playerDistance = new Vector2(transform.position.x - player.transform.position.x, transform.position.y - player.transform.position.y).magnitude;
+
+        if (!isAttacking && playerDistance <= 10) 
         {
+            direction = new Vector2 (player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y).normalized;
+
+
             GameObject tempProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
 
             tempProjectile.GetComponent<ProjectileController>().creator = gameObject;
             tempProjectile.GetComponent<ProjectileController>().projectileDamage = 2;
-            tempProjectile.GetComponent<ProjectileController>().velocity = DIRECTION * PROJECTILE_SPEED;
-            tempProjectile.GetComponent<Transform>().Rotate(0,0, Mathf.Atan2(DIRECTION.y,DIRECTION.x) * Mathf.Rad2Deg + PROJECTILE_SPRITE_OFFSET, Space.Self);
+            tempProjectile.GetComponent<ProjectileController>().velocity = direction * PROJECTILE_SPEED;
+
+            tempProjectile.GetComponent<Transform>().Rotate(0,0, Mathf.Atan2(direction.y,direction.x) * Mathf.Rad2Deg + PROJECTILE_SPRITE_OFFSET, Space.Self);
 
             isAttacking = true;
             attackingTimer = 0.0f;

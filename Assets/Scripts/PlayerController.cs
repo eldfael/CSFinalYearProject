@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     public int stat_CurrentHP;
     public int stat_MaxSTA;
     public int stat_CurrentSTA;
+    public int stat_totalXP;
 
     // Movement Decleration
     public float MOVEMENT_SPEED = 5.0f;
@@ -59,6 +60,8 @@ public class PlayerController : MonoBehaviour
         
         stat_MaxHP = 10;
         stat_CurrentHP = stat_MaxHP;
+
+        stat_totalXP = 0;
     }
 
     void Awake()
@@ -73,7 +76,7 @@ public class PlayerController : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (stat_CurrentHP < 1)
+        if (stat_CurrentHP <= 0)
         {
             Destroy(gameObject);
         }
@@ -170,7 +173,7 @@ public class PlayerController : MonoBehaviour
                 {
                     stat_CurrentHP -= collision.GetComponent<ProjectileController>().projectileDamage;
                     Debug.Log("Player takes damage");
-                    if (stat_CurrentHP < 1)
+                    if (stat_CurrentHP <= 0)
                     {
                         // Player Dies
                         Destroy(gameObject);
@@ -179,5 +182,10 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Player Collision");
+    }
+
 }
