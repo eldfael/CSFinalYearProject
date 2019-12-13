@@ -68,12 +68,14 @@ public class PlayerController : MonoBehaviour
     {
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
     }
+
     void Update()
     {
         handleInput();
 
         handleRolling();
     }
+
     void FixedUpdate()
     {
         if (stat_CurrentHP <= 0)
@@ -89,6 +91,31 @@ public class PlayerController : MonoBehaviour
 
         handleTimers();
     }
+    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!isRolling) { 
+            if (collision.gameObject.tag == "Projectile") {
+                if (!collision.GetComponent<ProjectileController>().creator.Equals(gameObject))
+                {
+                    stat_CurrentHP -= collision.GetComponent<ProjectileController>().projectileDamage;
+                    Debug.Log("Player takes damage");
+                    if (stat_CurrentHP <= 0)
+                    {
+                        // Player Dies
+                        Destroy(gameObject);
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+
+    }
+
+
     private void handleMovement() 
     { 
         // If the player is not rolling move normally according to keyboard inputs
@@ -127,7 +154,7 @@ public class PlayerController : MonoBehaviour
         if (keyboardDirection.magnitude != 0 && rollingKeyDown && !isRolling) 
         {
             rollingDirection = keyboardDirection.normalized;
-            
+            gameObject.layer = LayerMask.NameToLayer("PlayerRolling");
             isRolling = true;
             rollingTimer = 0.0f;
 
@@ -162,30 +189,20 @@ public class PlayerController : MonoBehaviour
 
         // Rolling Timers
         if (isRolling) { rollingTimer += Time.fixedDeltaTime; }
-        if (rollingTimer >= ROLLING_DURATION) { isRolling = false; sprRenderer.sprite = defaultSprite; }
+        if (rollingTimer >= ROLLING_DURATION) { isRolling = false; sprRenderer.sprite = defaultSprite; gameObject.layer = LayerMask.NameToLayer("Player"); }
         
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    public void handleDamage(int damage) 
     {
-        if (!isRolling) { 
-            if (collision.gameObject.tag == "Projectile") {
-                if (!collision.GetComponent<ProjectileController>().creator.Equals(gameObject))
-                {
-                    stat_CurrentHP -= collision.GetComponent<ProjectileController>().projectileDamage;
-                    Debug.Log("Player takes damage");
-                    if (stat_CurrentHP <= 0)
-                    {
-                        // Player Dies
-                        Destroy(gameObject);
-                    }
-                }
-            }
+        stat_CurrentHP -= damage;
+        Debug.Log("Player takes " + damage + " Damage");
+        if (stat_CurrentHP <= 0) 
+        {
+            //Die
+            Destroy(gameObject);
         }
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log("Player Collision");
-    }
+    
 
 }

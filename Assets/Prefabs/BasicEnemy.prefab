@@ -118,6 +118,8 @@ MonoBehaviour:
   projectile: {fileID: 7284545993584640778, guid: fe5cf0633ab54874a962cb3645df80db,
     type: 3}
   player: {fileID: 0}
+  XPOrb: {fileID: 4112610165584959008, guid: 2e7b2b9644392294e988b852ac1b566b, type: 3}
+  XPOrbQuant: 5
   direction: {x: 0, y: 0}
   PROJECTILE_SPEED: 10
   ATTACKING_INTERVAL: 2

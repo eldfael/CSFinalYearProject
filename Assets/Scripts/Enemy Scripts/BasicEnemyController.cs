@@ -6,8 +6,12 @@ public class BasicEnemyController : MonoBehaviour
 {
     public GameObject projectile;
     public GameObject player;
+    
+    public GameObject XPOrb;
+    public int XPOrbQuant;
 
     public Vector2 direction;
+
     public float PROJECTILE_SPEED;
     public float ATTACKING_INTERVAL;
     public float PROJECTILE_SPRITE_OFFSET = 90;
@@ -40,7 +44,7 @@ public class BasicEnemyController : MonoBehaviour
         if (!isAttacking && playerDistance <= 10) 
         {
             direction = new Vector2 (player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y).normalized;
-
+            direction = (direction + new Vector2(Random.Range(direction.x + 0.3f, direction.x - 0.3f), Random.Range(direction.y + 0.3f, direction.y - 0.3f))).normalized; // add aimcone !
 
             GameObject tempProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
 
@@ -78,9 +82,13 @@ public class BasicEnemyController : MonoBehaviour
                 if (stat_CurrentHP < 1) 
                 {
                     // Enemy Dies
+
+                    for (int x = 0; x < XPOrbQuant; x++) { Instantiate(XPOrb, transform.position, Quaternion.identity); }
                     Destroy(gameObject);
                 }
             }
         }
     }
+
+
 }

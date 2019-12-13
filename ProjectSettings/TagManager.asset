@@ -21,7 +21,7 @@ TagManager:
   - Player
   - Enemy
   - XP
-  - 
+  - PlayerRolling
   - 
   - 
   - 
@@ -44,12 +44,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Player
-    uniqueID: 3228050521
-    locked: 0
   - name: Floor
     uniqueID: 4125292147
     locked: 0
-  - name: Walls
+  - name: Player
+    uniqueID: 3228050521
+    locked: 0
+  - name: Enemy
+    uniqueID: 4035211091
+    locked: 0
+  - name: Wall
     uniqueID: 3217543137
     locked: 0
