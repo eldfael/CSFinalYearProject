@@ -13,11 +13,12 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
 
     float contactTimer;
 
-    float GRUNT_MOVESPEED = 3f;
+    public float GRUNT_MOVESPEED = 3f;
+    public float DETECTION_RADIUS = 10f;
     float IDLETIMER_THRESHHOLD = 0.5f;
     float CONTACTTIMER_THRESHHOLD = 0.5f;
 
-    int CONTACTDAMAGE = 2;
+    public int CONTACTDAMAGE = 2;
 
     public void OnStart()
     {
@@ -38,7 +39,7 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
             playerObject.transform.position.y - transform.position.y);
 
         // Check if player is within a set radius
-        if (playerVector.magnitude <= 5)
+        if (playerVector.magnitude <= DETECTION_RADIUS)
         {
             idle = false;
             idleTimer = 0;

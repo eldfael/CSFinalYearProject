@@ -17,9 +17,9 @@ public class PlayerController : MonoBehaviour
 
     // Stats Decleration
     public int stat_MaxHP;
-    public int stat_CurrentHP;
+    int stat_CurrentHP;
     public int stat_MaxSTA;
-    public int stat_CurrentSTA;
+    int stat_CurrentSTA;
     public int stat_totalXP;
 
     // Movement Decleration
@@ -29,28 +29,28 @@ public class PlayerController : MonoBehaviour
     public float ROLLING_SPEED = 9.0f;
     public float ROLLING_DURATION = 0.5f; // 0.5 per second (for some reason im not sure yet..)
 
-    public Vector2 rollingDirection;
-    public float rollingTimer = 0.0f;
-    public bool rollingKeyDown;
+    Vector2 rollingDirection;
+    float rollingTimer = 0.0f;
+    bool rollingKeyDown;
     public bool isRolling = false;
 
     // Attacking Decleration
     public float PROJECTILE_SPEED = 15f;
     public float PROJECTILE_INTERVAL = 0.5f;
 
-    public float attackingTimer = 0.0f;
-    public bool attackingKeyHeld;
-    public bool isAttacking = false;
+    float attackingTimer = 0.0f;
+    bool attackingKeyHeld;
+    bool isAttacking = false;
 
     public float PROJECTILE_SPRITE_OFFSET = 90f;
 
     // Inputs Decleration
-    public Vector2 mousePosition;
-    public Vector2 keyboardDirection;
+    Vector2 mousePosition;
+    Vector2 keyboardDirection;
 
     // Key Decleration
-    public KeyCode rollingKey = KeyCode.Mouse1;
-    public KeyCode attackingKey = KeyCode.Mouse0;
+    KeyCode rollingKey = KeyCode.Mouse1;
+    KeyCode attackingKey = KeyCode.Mouse0;
 
 
     void Start()
@@ -202,6 +202,12 @@ public class PlayerController : MonoBehaviour
             //Die
             Destroy(gameObject);
         }
+    }
+
+    public void handleXPGain()
+    {
+        stat_totalXP++;
+        Debug.Log(stat_totalXP);
     }
     
 

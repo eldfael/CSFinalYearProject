@@ -31,8 +31,7 @@ public class XPOrbController : MonoBehaviour
             }
             if (Physics2D.OverlapBox(transform.position, new Vector2(0.5f, 0.5f), 0, LayerMask.GetMask("Player") | LayerMask.GetMask("PlayerRolling")))
             {
-                player.GetComponent<PlayerController>().stat_totalXP++;
-                Debug.Log(player.GetComponent<PlayerController>().stat_totalXP);
+                player.GetComponent<PlayerController>().handleXPGain();
                 Destroy(gameObject);
             }
         }
