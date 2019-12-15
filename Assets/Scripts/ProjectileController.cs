@@ -28,7 +28,7 @@ public class ProjectileController : MonoBehaviour
         {
             if (collision.tag.Equals("Player")) 
             { 
-                if (collision.TryGetComponent<PlayerController>(out PlayerController p) == true && p.isRolling == false) 
+                if (collision.TryGetComponent<PlayerController>(out PlayerController p) == true && p.rollBoolean == false) 
                 {
                     Destroy(gameObject);
                 }
