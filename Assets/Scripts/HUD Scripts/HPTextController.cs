@@ -16,7 +16,7 @@ public class HPTextController : MonoBehaviour
 
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         text.text = playerObject.GetComponent<PlayerController>().stat_CurrentHP + " / " + playerObject.GetComponent<PlayerController>().stat_MaxHP;
     }

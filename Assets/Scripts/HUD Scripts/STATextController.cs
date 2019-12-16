@@ -16,7 +16,7 @@ public class STATextController : MonoBehaviour
 
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         text.text = playerObject.GetComponent<PlayerController>().stat_CurrentSTA + " / " + playerObject.GetComponent<PlayerController>().stat_MaxSTA;
     }

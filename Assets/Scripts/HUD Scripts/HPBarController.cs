@@ -12,7 +12,7 @@ public class HPBarController : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         rectTransform.localScale = new Vector3(playerObject.GetComponent<PlayerController>().getHPPercentage()
             ,1,1);

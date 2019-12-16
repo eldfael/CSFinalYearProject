@@ -12,7 +12,7 @@ public class STABarController : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         rectTransform.localScale = new Vector3(playerObject.GetComponent<PlayerController>().getSTAPercentage()
             , 1, 1);

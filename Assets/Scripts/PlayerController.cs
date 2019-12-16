@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     public int stat_MaxSTA;
     public int stat_CurrentSTA;
     float stat_STATimer = 0f;
-    float stat_STARegenTime = 3f;
+    float stat_STARegenTime = 1f;
 
     int stat_totalXP;
 
@@ -193,7 +193,9 @@ public class PlayerController : MonoBehaviour
         // To be worked on 
         // Weapons need to be implemented through the use of a seperate script called from the handleAttacking() method
 
-        if (!attackBoolean && !rollBoolean && attackKeyHeld) {
+        if (!attackBoolean && !rollBoolean && attackKeyHeld && stat_CurrentSTA >= 1) {
+
+            handleSTAChange(-1);
 
             GameObject tempProjectile = Instantiate(projectile,transform.position,Quaternion.identity);
 
