@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Projectile
   - Enemy
   - Wall
+  - Projectile
   layers:
   - Default
   - TransparentFX
@@ -17,12 +17,12 @@ TagManager:
   - 
   - 
   - Wall
-  - Projectile
+  - Player Projectile
   - Player
   - Enemy
   - XP
-  - PlayerRolling
-  - 
+  - Player Rolling
+  - Enemy Projectile
   - 
   - 
   - 
@@ -55,4 +55,7 @@ TagManager:
     locked: 0
   - name: Wall
     uniqueID: 3217543137
+    locked: 0
+  - name: HUD
+    uniqueID: 4111963075
     locked: 0

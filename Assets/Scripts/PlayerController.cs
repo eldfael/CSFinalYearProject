@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer playerSpriteRenderer;
     Camera mainCamera;
     
+    
     public GameObject projectile;
 
     // Sprite Decleration
@@ -17,10 +18,16 @@ public class PlayerController : MonoBehaviour
 
     // Stats Decleration
     public int stat_MaxHP;
-    int stat_CurrentHP;
+    public int stat_CurrentHP;
+
     public int stat_MaxSTA;
-    int stat_CurrentSTA;
+    public int stat_CurrentSTA;
+    float stat_STATimer = 0f;
+    float stat_STARegenTime = 3f;
+
     int stat_totalXP;
+
+    int stat_END = 0;
 
     // Movement Decleration
     public float MOVEMENT_SPEED = 6.0f;
@@ -40,6 +47,7 @@ public class PlayerController : MonoBehaviour
 
     float attackTimer = 0.0f;
     bool attackKeyHeld;
+    bool attackKeyDown;
     bool attackBoolean = false;
 
     public float PROJECTILE_SPRITE_OFFSET = 90f;
@@ -61,6 +69,9 @@ public class PlayerController : MonoBehaviour
         stat_MaxHP = 10;
         stat_CurrentHP = stat_MaxHP;
 
+        stat_MaxSTA = 10;
+        stat_CurrentSTA = stat_MaxSTA;
+
         stat_totalXP = 0;
     }
 
@@ -71,6 +82,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        
         handleInput();
 
         handleRolling();
@@ -78,10 +90,9 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (stat_CurrentHP <= 0)
-        {
-            Destroy(gameObject);
-        }
+        handleHP();
+
+        handleSTA();
 
         handleCamera();
 
@@ -94,19 +105,9 @@ public class PlayerController : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!rollBoolean) { 
-            if (collision.gameObject.tag == "Projectile") {
-                if (!collision.GetComponent<ProjectileController>().creator.Equals(gameObject))
-                {
-                    stat_CurrentHP -= collision.GetComponent<ProjectileController>().projectileDamage;
-                    Debug.Log("Player takes damage");
-                    if (stat_CurrentHP <= 0)
-                    {
-                        // Player Dies
-                        Destroy(gameObject);
-                    }
-                }
-            }
+        if(collision.gameObject.tag.Equals("Projectile"))
+        {
+            handleDamage(collision.gameObject.GetComponent<ProjectileController>().projectileDamage);
         }
     }
 
@@ -156,6 +157,8 @@ public class PlayerController : MonoBehaviour
 
         // Check to see if the key to attack is being held
         attackKeyHeld = Input.GetKey(attackKey);
+        // Check to see if the key to attack has been pushed
+        attackKeyDown = Input.GetKeyDown(attackKey);
 
 
     }
@@ -164,13 +167,15 @@ public class PlayerController : MonoBehaviour
     { 
         // Called in Update
 
-        // Check to see if the player has an input direction and that the player is not already rolling if the rolling key is pressed
-        if (rollKeyDown && keyboardDirection.magnitude != 0  && !rollBoolean) 
+        // Check to see if the player has an input direction and that the player is not already rolling if the rolling key is pressed (and stamina above 1)
+        if (rollKeyDown && keyboardDirection.magnitude != 0  && !rollBoolean && stat_CurrentSTA >= 1) 
         {
+            // Remove 1 Stamina
+            handleSTAChange(-1);
             // Set the direction of the roll to the current direction of keyboard input
             rollDirection = keyboardDirection.normalized;
             // Change the layer of the player to "PlayerRolling" instead of "Player"
-            gameObject.layer = LayerMask.NameToLayer("PlayerRolling");
+            gameObject.layer = LayerMask.NameToLayer("Player Rolling");
             // Set rolling boolean to true
             rollBoolean = true;
             // Reset the rolling timer
@@ -183,6 +188,11 @@ public class PlayerController : MonoBehaviour
 
     private void handleAttacking() 
     {
+        // Called in FixedUpdate
+
+        // To be worked on 
+        // Weapons need to be implemented through the use of a seperate script called from the handleAttacking() method
+
         if (!attackBoolean && !rollBoolean && attackKeyHeld) {
 
             GameObject tempProjectile = Instantiate(projectile,transform.position,Quaternion.identity);
@@ -193,6 +203,7 @@ public class PlayerController : MonoBehaviour
             tempProjectile.GetComponent<ProjectileController>().velocity = (mousePosition - new Vector2(transform.position.x,transform.position.y)).normalized * PROJECTILE_SPEED;
             
             tempProjectile.GetComponent<Transform>().Rotate(0,0, Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x) * Mathf.Rad2Deg + PROJECTILE_SPRITE_OFFSET, Space.Self);
+            tempProjectile.layer = LayerMask.NameToLayer("Player Projectile");
 
             attackBoolean = true;
             attackTimer = 0.0f;
@@ -212,24 +223,70 @@ public class PlayerController : MonoBehaviour
         // Rolling Timers
         if (rollBoolean) { rollTimer += Time.fixedDeltaTime; }
         if (rollTimer >= ROLL_DURATION) { rollBoolean = false; playerSpriteRenderer.sprite = defaultSprite; gameObject.layer = LayerMask.NameToLayer("Player"); }
+
+        // Stamina regeneration
+        if (stat_CurrentSTA < stat_MaxSTA) { stat_STATimer += Time.fixedDeltaTime; }
         
     }
 
     public void handleDamage(int damage) 
     {
-        stat_CurrentHP -= damage;
+        stat_CurrentHP -= damage - stat_END;
         Debug.Log("Player takes " + damage + " Damage");
-        if (stat_CurrentHP <= 0) 
-        {
-            //Die
-            Destroy(gameObject);
-        }
+        handleHP();
     }
 
     public void handleXPGain()
     {
         stat_totalXP++;
         Debug.Log(stat_totalXP);
+    }
+
+    void handleHP()
+    {
+        // Called in FixedUpdate
+
+        // Make sure HP stays in the range 0 - MaxHP
+        Mathf.Clamp(stat_CurrentHP,0,stat_MaxHP);
+        // Check to see if HP is at 0 and handle player death if it is at 0
+        if (stat_CurrentHP == 0) { handleDeath(); }
+    }
+
+    void handleSTA()
+    {
+        // Called in FixedUpdate
+
+        // Make sure Stamina is in range of 0 - MaxSTA
+        Mathf.Clamp(stat_CurrentSTA, 0, stat_MaxSTA);
+        // Regen stamina
+        if (stat_STATimer >= stat_STARegenTime) 
+        {
+            stat_CurrentSTA++;
+            stat_STATimer = 0f;
+        }
+        Debug.Log(stat_CurrentSTA);
+
+
+    }
+
+    void handleSTAChange(int change)
+    {
+        stat_CurrentSTA += change;
+    }
+
+    void handleDeath() 
+    {
+        Destroy(gameObject);
+    }
+
+    public float getHPPercentage()
+    {
+        return ((float)stat_CurrentHP / (float)stat_MaxHP);
+    }
+
+    public float getSTAPercentage()
+    {
+        return ((float)stat_CurrentSTA / (float)stat_MaxSTA);
     }
     
 
