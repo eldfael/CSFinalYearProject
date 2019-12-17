@@ -18,12 +18,12 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         enemyBehaviour = GetComponent<EnemyBehaviour>();
-        Debug.Log(enemyBehaviour);
         // Set the enemy's current HP to it's max HP
         enemy_CurrentHP = enemy_MaxHP;
         // Run the enemy's start method
         enemyBehaviour.OnStart();
     }
+
 
     private void FixedUpdate()
     {

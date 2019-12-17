@@ -32,34 +32,40 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
 
     public void OnFixed()
     {
-
-        // Create a vector that is the direction and magnitutde of the player from the enemy
-        Vector2 playerVector = new Vector2(
-            playerObject.transform.position.x - transform.position.x,
-            playerObject.transform.position.y - transform.position.y);
-
-        // Check if player is within a set radius
-        if (playerVector.magnitude <= DETECTION_RADIUS)
+        if (playerObject == null)
         {
-            idle = false;
-            idleTimer = 0;
+            playerObject = GameObject.FindGameObjectWithTag("Player");
         }
-
-        // If enemy is NOT idle add to the idle timer
-        if (!idle)
+        else
         {
-            idleTimer += Time.fixedDeltaTime;
+            // Create a vector that is the direction and magnitutde of the player from the enemy
+            Vector2 playerVector = new Vector2(
+                playerObject.transform.position.x - transform.position.x,
+                playerObject.transform.position.y - transform.position.y);
 
-            // If idle timer reaches certain threshold set idle to true and movementspeed to 0
-            if (idleTimer >= IDLETIMER_THRESHHOLD) { idle = true; enemyRigidBody.velocity = Vector2.zero; }
-        }
+            // Check if player is within a set radius
+            if (playerVector.magnitude <= DETECTION_RADIUS)
+            {
+                idle = false;
+                idleTimer = 0;
+            }
 
-        // If enemy isn't idle move towards the player
-        if (!idle) { enemyRigidBody.velocity = playerVector.normalized * GRUNT_MOVESPEED; }
-        
-        if (contactTimer <= CONTACTTIMER_THRESHHOLD)
-        {
-            contactTimer += Time.fixedDeltaTime;
+            // If enemy is NOT idle add to the idle timer
+            if (!idle)
+            {
+                idleTimer += Time.fixedDeltaTime;
+
+                // If idle timer reaches certain threshold set idle to true and movementspeed to 0
+                if (idleTimer >= IDLETIMER_THRESHHOLD) { idle = true; enemyRigidBody.velocity = Vector2.zero; }
+            }
+
+            // If enemy isn't idle move towards the player
+            if (!idle) { enemyRigidBody.velocity = playerVector.normalized * GRUNT_MOVESPEED; }
+
+            if (contactTimer <= CONTACTTIMER_THRESHHOLD)
+            {
+                contactTimer += Time.fixedDeltaTime;
+            }
         }
 
 

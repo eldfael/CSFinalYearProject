@@ -121,14 +121,17 @@ MonoBehaviour:
   defaultSprite: {fileID: 21300000, guid: 456ee03e40ce75f4d92b707500031ec8, type: 3}
   rollingSprite: {fileID: 21300000, guid: 13aeec80013ab87498a023df41bd4064, type: 3}
   stat_MaxHP: 0
+  stat_CurrentHP: 0
   stat_MaxSTA: 0
-  stat_totalXP: 0
+  stat_CurrentSTA: 0
+  stat_TotalXP: 0
+  stat_Level: 0
   MOVEMENT_SPEED: 6
-  ROLLING_SPEED: 10
-  ROLLING_DURATION: 0.5
-  isRolling: 0
-  PROJECTILE_SPEED: 15
-  PROJECTILE_INTERVAL: 0.2
+  ROLL_SPEED: 10
+  ROLL_DURATION: 0.5
+  rollBoolean: 0
+  PROJECTILE_SPEED: 14
+  ATTACK_DURATION: 0.2
   PROJECTILE_SPRITE_OFFSET: 90
 --- !u!61 &211922380
 BoxCollider2D:

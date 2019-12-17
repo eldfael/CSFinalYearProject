@@ -29,9 +29,13 @@ public class XPOrbController : MonoBehaviour
             if (playerDistance.magnitude <= 4) {
                 rb.velocity = playerDistance.normalized * -15f;
             }
+            else 
+            {
+                rb.velocity = Vector2.zero;
+            }
             if (Physics2D.OverlapBox(transform.position, new Vector2(0.5f, 0.5f), 0, LayerMask.GetMask("Player") | LayerMask.GetMask("PlayerRolling")))
             {
-                player.GetComponent<PlayerController>().handleXPGain();
+                player.GetComponent<PlayerController>().handleXPGain(1);
                 Destroy(gameObject);
             }
         }
