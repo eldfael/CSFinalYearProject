@@ -82,7 +82,7 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
         if (contactTimer >= CONTACTTIMER_THRESHHOLD) 
         {
             contactTimer = 0;
-            playerObject.GetComponent<PlayerController>().handleDamage(CONTACTDAMAGE);
+            playerObject.GetComponent<PlayerController>().HandleDamage(CONTACTDAMAGE);
         }
     }
 }

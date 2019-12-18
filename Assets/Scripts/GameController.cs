@@ -6,39 +6,47 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     GameObject playerObject;
-    bool inScene;
     void Start()
     {
         DontDestroyOnLoad(gameObject);
-        inScene = true;
         playerObject = GameObject.FindGameObjectWithTag("Player");
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (SceneManager.GetActiveScene().name == "LevelUp")
-            {
-                SceneManager.LoadSceneAsync("Level1", LoadSceneMode.Single);
-                playerObject.GetComponent<PlayerController>().setActive();
-            }
-            if (SceneManager.GetActiveScene().name == "Level1")
-            {
-                SceneManager.LoadScene("Level1", LoadSceneMode.Single);
-                //playerObject.GetComponent<PlayerController>().setInactive();
-            }
-            if (SceneManager.GetActiveScene().name == "EmptyScene")
-            {
-                SceneManager.LoadScene("Level1", LoadSceneMode.Single);
-            }
+            playerObject.GetComponent<PlayerController>().SetStatPoints(1);
         }
 
     }
 
-    private void OnLevelWasLoaded(int level)
-    {
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    { 
         playerObject.transform.position = Vector2.zero;
+        if (scene.name == "LevelUp")
+        {
+            playerObject.GetComponent<PlayerController>().SetInactive();
+        }
+        else
+        {
+            playerObject.GetComponent<PlayerController>().SetActive();
+        }
+    }
+
+    public void SwapScene()
+    {
+        if (playerObject.GetComponent<PlayerController>().GetStatPoints() >= 1)
+        {
+            SceneManager.LoadSceneAsync("LevelUp");
+            
+        }
+        else
+        {
+            SceneManager.LoadSceneAsync("Level1");
+        }
     }
 
 }

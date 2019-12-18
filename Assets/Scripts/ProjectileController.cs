@@ -38,7 +38,7 @@ public class ProjectileController : MonoBehaviour
                 if (playerProjectile == true)
                 {
                     creator.TryGetComponent<PlayerController>(out PlayerController p);
-                    p.handleSTAChange(1);
+                    p.HandleSTAChange(1);
                     Destroy(gameObject);
                 }
             }

@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D playerRigidyBody;
     SpriteRenderer playerSpriteRenderer;
     Camera mainCamera;
+    GameController gameController;
 
 
     public GameObject projectile;
@@ -27,8 +28,13 @@ public class PlayerController : MonoBehaviour
 
     public int stat_TotalXP;
     public int stat_Level;
+    int stat_Points = 0;
 
     int stat_END = 0;
+
+    int stat_STR = 5;
+    int stat_AGI = 5;
+    int stat_VIT = 5;
 
     // Movement Decleration
     public float MOVEMENT_SPEED = 6.0f;
@@ -51,6 +57,8 @@ public class PlayerController : MonoBehaviour
     bool attackKeyDown;
     bool attackBoolean = false;
 
+    bool interactKeyDown;
+
     public bool isActive;
 
     public float PROJECTILE_SPRITE_OFFSET = 90f;
@@ -62,12 +70,14 @@ public class PlayerController : MonoBehaviour
     // Key Decleration
     KeyCode rollKey = KeyCode.Mouse1;
     KeyCode attackKey = KeyCode.Mouse0;
+    KeyCode interactKey = KeyCode.E;
 
 
     void Start()
     {
         playerRigidyBody = GetComponent<Rigidbody2D>();
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 
         stat_MaxHP = 10;
         stat_CurrentHP = stat_MaxHP;
@@ -77,6 +87,7 @@ public class PlayerController : MonoBehaviour
 
         stat_TotalXP = 0;
         stat_Level = 0;
+        //stat_Points = 0;
 
         isActive = true;
     }
@@ -88,32 +99,34 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        handleInput();
+        HandleInput();
 
         if (isActive)
         {
-            handleRolling();
+            HandleRolling();
         }
     }
 
     void FixedUpdate()
     {
 
-        handleHP();
+        HandleHP();
 
-        handleSTA();
+        HandleSTA();
+
+        UpdateStats();
 
         if (isActive)
         {
-            handleCamera();
+            HandleCamera();
 
-            handleLevel();
+            HandleLevel();
 
-            handleMovement();
+            HandleMovement();
 
-            handleAttacking();
+            HandleAttacking();
 
-            handleTimers();
+            HandleTimers();
         }
     }
 
@@ -121,7 +134,15 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag.Equals("Projectile"))
         {
-            handleDamage(collision.gameObject.GetComponent<ProjectileController>().projectileDamage);
+            HandleDamage(collision.gameObject.GetComponent<ProjectileController>().projectileDamage);
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Portal")) 
+        {
+            gameController.SwapScene();
         }
     }
 
@@ -131,7 +152,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void handleMovement()
+    private void HandleMovement()
     {
         // Called in FixedUpdate
 
@@ -141,7 +162,7 @@ public class PlayerController : MonoBehaviour
         else playerRigidyBody.velocity = rollDirection * ROLL_SPEED;
     }
 
-    private void handleCamera()
+    private void HandleCamera()
     {
         // Called in FixedUpdate
 
@@ -152,7 +173,7 @@ public class PlayerController : MonoBehaviour
             -100);
     }
 
-    private void handleInput()
+    private void HandleInput()
     {
         // Called in Update
 
@@ -174,10 +195,14 @@ public class PlayerController : MonoBehaviour
         // Check to see if the key to attack has been pushed
         attackKeyDown = Input.GetKeyDown(attackKey);
 
+        // Check to see if the key to interact has been pushed
+        interactKeyDown = Input.GetKeyDown(interactKey);
+        if (interactKeyDown) { Debug.Log("KEYDOWN"); }
+
 
     }
 
-    private void handleRolling()
+    private void HandleRolling()
     {
         // Called in Update
 
@@ -185,7 +210,7 @@ public class PlayerController : MonoBehaviour
         if (rollKeyDown && keyboardDirection.magnitude != 0 && !rollBoolean && stat_CurrentSTA >= 2)
         {
             // Remove 1 Stamina
-            handleSTAChange(-2);
+            HandleSTAChange(-2);
             // Set the direction of the roll to the current direction of keyboard input
             rollDirection = keyboardDirection.normalized;
             // Change the layer of the player to "PlayerRolling" instead of "Player"
@@ -200,7 +225,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void handleAttacking()
+    private void HandleAttacking()
     {
         // Called in FixedUpdate
 
@@ -209,13 +234,13 @@ public class PlayerController : MonoBehaviour
 
         if (!attackBoolean && !rollBoolean && attackKeyHeld && stat_CurrentSTA >= 1) {
 
-            handleSTAChange(-1);
+            HandleSTAChange(-1);
 
             GameObject tempProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
 
             tempProjectile.GetComponent<ProjectileController>().creator = gameObject;
             tempProjectile.GetComponent<ProjectileController>().playerProjectile = true;
-            tempProjectile.GetComponent<ProjectileController>().projectileDamage = 2;
+            tempProjectile.GetComponent<ProjectileController>().projectileDamage = stat_STR/2;
             tempProjectile.GetComponent<ProjectileController>().velocity = (mousePosition - new Vector2(transform.position.x, transform.position.y)).normalized * PROJECTILE_SPEED;
 
             tempProjectile.GetComponent<Transform>().Rotate(0, 0, Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x) * Mathf.Rad2Deg + PROJECTILE_SPRITE_OFFSET, Space.Self);
@@ -227,14 +252,14 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void handleTimers()
+    private void HandleTimers()
     {
         // Called in FixedUpdate
 
         // Attacking Timers
         // If the player is attacking
         if (attackBoolean) { attackTimer += Time.fixedDeltaTime; }
-        if (attackTimer >= ATTACK_DURATION) { attackBoolean = false; }
+        if (attackTimer >= ATTACK_DURATION / ((float)stat_AGI / 5)) { attackBoolean = false; }
 
         // Rolling Timers
         if (rollBoolean) { rollTimer += Time.fixedDeltaTime; }
@@ -245,63 +270,61 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void handleDamage(int damage)
+    public void HandleDamage(int damage)
     {
         stat_CurrentHP -= damage - stat_END;
-        handleHP();
+        HandleHP();
     }
 
-    public void handleXPGain(int xp)
+    public void HandleXPGain(int xp)
     {
         stat_TotalXP += xp;
     }
 
-    void handleLevel()
+    void HandleLevel()
     {
-        if (stat_TotalXP >= levelThreshhold(stat_Level + 1))
+        if (stat_TotalXP >= GetLevelThreshhold(stat_Level + 1))
         {
-            stat_Level++;
-            Debug.Log(stat_Level);
+            stat_Level ++;
+            stat_Points  ++;
         }
     }
 
-    public int levelThreshhold(int level)
+    public int GetLevelThreshhold(int level)
     {
         return (4 * (level * level) + 5 * level);
     }
 
-    void handleHP()
+    void HandleHP()
     {
         // Called in FixedUpdate
 
         // Make sure HP stays in the range 0 - MaxHP
         stat_CurrentHP = Mathf.Clamp(stat_CurrentHP, 0, stat_MaxHP);
         // Check to see if HP is at 0 and handle player death if it is at 0
-        if (stat_CurrentHP == 0) { handleDeath(); }
+        if (stat_CurrentHP == 0) { HandleDeath(); }
     }
 
-    void handleSTA()
+    void HandleSTA()
     {
         // Called in FixedUpdate
 
-        // Make sure Stamina is in range of 0 - MaxSTA
-        stat_CurrentSTA = Mathf.Clamp(stat_CurrentSTA, 0, stat_MaxSTA);
         // Regen stamina
         if (stat_STATimer >= stat_STARegenTime)
         {
-            stat_CurrentSTA++;
+            HandleSTAChange(1);
             stat_STATimer = 0f;
         }
 
 
     }
 
-    public void handleSTAChange(int change)
+    public void HandleSTAChange(int change)
     {
         stat_CurrentSTA = Mathf.Clamp(stat_CurrentSTA += change, 0, stat_MaxSTA);
     }
 
-    void handleDeath()
+    void HandleDeath()
     {
         isActive = false;
     }
@@ -316,7 +339,7 @@ public class PlayerController : MonoBehaviour
         return Mathf.Clamp01(((float)stat_CurrentSTA / (float)stat_MaxSTA));
     }
 
-    public void setInactive()
+    public void SetInactive()
     {
         rollBoolean = false; playerSpriteRenderer.sprite = defaultSprite; gameObject.layer = LayerMask.NameToLayer("Player");
         
@@ -324,10 +347,46 @@ public class PlayerController : MonoBehaviour
         isActive = false;
     }
 
-    public void setActive()
+    public void SetActive()
     {
         isActive = true;
     }
-    
+
+    // Stat point methods
+    public int GetStatPoints()
+    {
+        // Return unspent stat points
+        return stat_Points;
+    }
+
+    public void SetStatPoints(int newStatPoints)
+    {
+        stat_Points = newStatPoints;
+    }
+
+    public void UpdateStats()
+    {
+        // Called in FixedUpdate
+
+        // Updates variables based on current player stats
+
+        stat_MaxSTA = stat_STR * 2;
+        stat_MaxHP = stat_VIT * 2;
+        
+    }
+
+    // Get methods for variables
+    public int GetSTR() { return stat_STR;}
+    public int GetAGI() { return stat_AGI; }
+    public int GetVIT() { return stat_VIT; }
+    public int GetLevel() { return stat_Level; }
+
+
+    // Set methods for stats
+    public void SetSTR(int newSTR) { stat_STR = newSTR; }
+    public void SetAGI(int newAGI) { stat_AGI = newAGI; }
+    public void SetVIT(int newVIT) { stat_VIT = newVIT; }
+    public void SetLevel(int newLevel) { stat_Level = newLevel; }
+
 
 }
