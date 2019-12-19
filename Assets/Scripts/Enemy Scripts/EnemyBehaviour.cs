@@ -7,7 +7,8 @@ public interface EnemyBehaviour
     void OnStart();
     void OnFixed();
     void OnDeath();
-
     void OnContact();
+    bool IsMoveable();
+    void Knockback(Vector2 direction);
 
 }

@@ -18,6 +18,6 @@ public class XPTextController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        text.text = playerController.stat_Level.ToString();
+        text.text = playerController.GetLevel().ToString();
     }
 }

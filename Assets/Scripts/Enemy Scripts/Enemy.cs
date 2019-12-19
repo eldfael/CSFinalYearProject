@@ -47,15 +47,21 @@ public class Enemy : MonoBehaviour
         if (collision.gameObject.tag.Equals("Projectile")) 
         {
             // Check to see if the projectile collision is a player projectile
-            if (collision.gameObject.GetComponent<ProjectileController>().playerProjectile.Equals(true))
+            if (collision.gameObject.GetComponent<ProjectileController>().GetCreator().CompareTag("Player"))
             {
                 // Cause the enemy to take damage from the projectile, and check to see if the damage reduces the enemy's health below 0
                 // Reduces the damage of the projectile by the enemy's Endurance stat, however damage can not be less than 1
-                enemy_CurrentHP -= Mathf.Max(collision.gameObject.GetComponent<ProjectileController>().projectileDamage - enemy_END , 1);
-                if (enemy_CurrentHP <= 0) 
+                enemy_CurrentHP -= Mathf.Max(collision.gameObject.GetComponent<ProjectileController>().GetDamage() - enemy_END , 1);
+
+                if (enemy_CurrentHP <= 0)
                 {
                     // If enemy's health reduced to 0 or below run the Death handling method
                     HandleDeath(gameObject, XPOrbQuantity);
+                }
+                else if (enemyBehaviour.IsMoveable())
+                {
+                    // If enemy is moveable then call the knockback method
+                    enemyBehaviour.Knockback(collision.gameObject.GetComponent<ProjectileController>().GetKnockback());
                 }
                 
             }

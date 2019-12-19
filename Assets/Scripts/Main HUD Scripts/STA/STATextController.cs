@@ -12,12 +12,12 @@ public class STATextController : MonoBehaviour
     {
         playerObject = GameObject.FindGameObjectWithTag("Player");
         text = GetComponent<Text>();
-        text.text = playerObject.GetComponent<PlayerController>().stat_CurrentSTA + " / " + playerObject.GetComponent<PlayerController>().stat_MaxSTA;
+        text.text = playerObject.GetComponent<PlayerController>().GetCurrentSTA() + " / " + playerObject.GetComponent<PlayerController>().GetMaxSTA();
 
     }
 
     private void FixedUpdate()
     {
-        text.text = playerObject.GetComponent<PlayerController>().stat_CurrentSTA + " / " + playerObject.GetComponent<PlayerController>().stat_MaxSTA;
+        text.text = playerObject.GetComponent<PlayerController>().GetCurrentSTA() + " / " + playerObject.GetComponent<PlayerController>().GetMaxSTA();
     }
 }

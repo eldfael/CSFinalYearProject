@@ -5,11 +5,13 @@ using UnityEngine;
 public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
 {
     GameObject playerObject;
-    Collider2D enemyCollider;
     Rigidbody2D enemyRigidBody;
     
     bool idle;
     float idleTimer;
+
+    Vector2 knockbackDirection;
+    float knockbackTimer;
 
     float contactTimer;
 
@@ -17,13 +19,13 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
     public float DETECTION_RADIUS = 10f;
     float IDLETIMER_THRESHHOLD = 0.5f;
     float CONTACTTIMER_THRESHHOLD = 0.5f;
+    float KNOCKBACK_THRESHHOLD = 0.2f;
 
     public int CONTACTDAMAGE = 2;
 
     public void OnStart()
     {
         playerObject = GameObject.FindGameObjectWithTag("Player");
-        enemyCollider = GetComponent<BoxCollider2D>();
         enemyRigidBody = GetComponent<Rigidbody2D>();
 
         idle = true;      
@@ -66,6 +68,14 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
             {
                 contactTimer += Time.fixedDeltaTime;
             }
+            if (knockbackTimer <= KNOCKBACK_THRESHHOLD)
+            {
+                enemyRigidBody.velocity = knockbackDirection;
+                knockbackTimer += Time.fixedDeltaTime;
+            }
+
+
+
         }
 
 
@@ -84,5 +94,13 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
             contactTimer = 0;
             playerObject.GetComponent<PlayerController>().HandleDamage(CONTACTDAMAGE);
         }
+    }
+
+    public bool IsMoveable() { return true; }
+
+    public void Knockback(Vector2 direction) 
+    { 
+        knockbackDirection = direction;
+        knockbackTimer = 0f; 
     }
 }

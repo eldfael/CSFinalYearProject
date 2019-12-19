@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class STABarController : MonoBehaviour
 {
-    GameObject playerObject;
+    PlayerController playerController;
     RectTransform rectTransform;
     private void Start()
     {
-        playerObject = GameObject.FindGameObjectWithTag("Player");
+        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         rectTransform = GetComponent<RectTransform>();
     }
 
     private void FixedUpdate()
     {
-        rectTransform.localScale = new Vector3(playerObject.GetComponent<PlayerController>().getSTAPercentage()
+        rectTransform.localScale = new Vector3((float)playerController.GetCurrentSTA() / (float)playerController.GetMaxSTA()
             , 1, 1);
     }
 }

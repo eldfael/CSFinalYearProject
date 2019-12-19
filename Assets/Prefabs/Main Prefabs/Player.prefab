@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6987940951063727467}
   - component: {fileID: 7596258637304363240}
   - component: {fileID: 6768939979656863616}
-  - component: {fileID: 7069619914815484616}
+  - component: {fileID: -3120274123376108098}
   - component: {fileID: 211922380}
   m_Layer: 10
   m_Name: Player
@@ -104,7 +104,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &7069619914815484616
+--- !u!114 &-3120274123376108098
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,20 +118,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectile: {fileID: 7284545993584640778, guid: fe5cf0633ab54874a962cb3645df80db,
     type: 3}
+  projectileSprite: {fileID: 21300000, guid: 347eacf69e571d24a820ff749fb3fc94, type: 3}
   defaultSprite: {fileID: 21300000, guid: 456ee03e40ce75f4d92b707500031ec8, type: 3}
   rollingSprite: {fileID: 21300000, guid: 13aeec80013ab87498a023df41bd4064, type: 3}
-  stat_MaxHP: 0
-  stat_CurrentHP: 0
-  stat_MaxSTA: 0
-  stat_CurrentSTA: 0
-  stat_TotalXP: 0
-  stat_Level: 0
   MOVEMENT_SPEED: 6
   ROLL_SPEED: 10
   ROLL_DURATION: 0.5
   rollBoolean: 0
-  PROJECTILE_SPEED: 14
-  ATTACK_DURATION: 0.2
+  PROJECTILE_SPEED: 15
+  ATTACK_DURATION: 0.5
+  isActive: 0
   PROJECTILE_SPRITE_OFFSET: 90
 --- !u!61 &211922380
 BoxCollider2D:

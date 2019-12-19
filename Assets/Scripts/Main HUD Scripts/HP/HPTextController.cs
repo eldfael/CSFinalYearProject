@@ -12,12 +12,12 @@ public class HPTextController : MonoBehaviour
     {
         playerObject = GameObject.FindGameObjectWithTag("Player");
         text = GetComponent<Text>();
-        text.text = playerObject.GetComponent<PlayerController>().stat_CurrentHP + " / " + playerObject.GetComponent<PlayerController>().stat_MaxHP;
+        text.text = playerObject.GetComponent<PlayerController>().GetCurrentHP() + " / " + playerObject.GetComponent<PlayerController>().GetMaxHP();
 
     }
 
     private void FixedUpdate()
     {
-        text.text = playerObject.GetComponent<PlayerController>().stat_CurrentHP + " / " + playerObject.GetComponent<PlayerController>().stat_MaxHP;
+        text.text = playerObject.GetComponent<PlayerController>().GetCurrentHP() + " / " + playerObject.GetComponent<PlayerController>().GetMaxHP();
     }
 }

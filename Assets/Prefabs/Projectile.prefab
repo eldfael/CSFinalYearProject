@@ -123,9 +123,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   creator: {fileID: 0}
-  playerProjectile: 0
-  rb: {fileID: 0}
+  projectileRigidbody: {fileID: 0}
   projectileDamage: 0
+  playerProjectile: 0
+  projectileDuration: 0
+  timer: 0
 --- !u!50 &8635078962624709884
 Rigidbody2D:
   serializedVersion: 4

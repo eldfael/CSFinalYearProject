@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class HPBarController : MonoBehaviour
 {
-    GameObject playerObject;
+
+    PlayerController playerController;
     RectTransform rectTransform;
     private void Start()
     {
-        playerObject = GameObject.FindGameObjectWithTag("Player");
+        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         rectTransform = GetComponent<RectTransform>();
     }
 
     private void FixedUpdate()
     {
-        rectTransform.localScale = new Vector3(playerObject.GetComponent<PlayerController>().getHPPercentage()
+        rectTransform.localScale = new Vector3((float)playerController.GetCurrentHP() / (float)playerController.GetMaxHP()
             ,1,1);
     }
 }
