@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface Weapon
 {
-    void OnAttack(GameObject player, Vector2 mousePosition, float damageMod);
+    void OnAttack();
     bool IsAutomatic();
     bool IsMelee();
     int GetSTACost();

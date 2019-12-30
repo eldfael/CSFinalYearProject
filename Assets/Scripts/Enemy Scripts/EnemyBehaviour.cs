@@ -10,5 +10,8 @@ public interface EnemyBehaviour
     void OnContact();
     bool IsMoveable();
     void Knockback(Vector2 direction);
+    int GetXPQuantity();
+    int GetMaxHP();
+    int GetEND();
 
 }

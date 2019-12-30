@@ -8,6 +8,7 @@ TagManager:
   - Wall
   - Projectile
   - Portal
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -21,11 +22,11 @@ TagManager:
   - Player Projectile
   - Player
   - Enemy
-  - XP
+  - Collectable
   - Player Rolling
   - Enemy Projectile
-  - 
-  - 
+  - Weapon
+  - Interactable
   - 
   - 
   - 
@@ -48,8 +49,14 @@ TagManager:
   - name: Floor
     uniqueID: 4125292147
     locked: 0
+  - name: Collectable
+    uniqueID: 3646998327
+    locked: 0
   - name: Player
     uniqueID: 3228050521
+    locked: 0
+  - name: Weapon
+    uniqueID: 1526378781
     locked: 0
   - name: Enemy
     uniqueID: 4035211091

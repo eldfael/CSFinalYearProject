@@ -24,8 +24,6 @@ public class WeaponKnife : MonoBehaviour, Weapon
     GameObject playerObject;
     BoxCollider2D boxCollider;
 
-    bool equipped;
-    bool held;
 
     public void Start()
     {
@@ -47,16 +45,12 @@ public class WeaponKnife : MonoBehaviour, Weapon
     }
     public void FixedUpdate()
     {
-        if (transform.parent != null && transform.parent.gameObject == playerObject) { held = true; }
-        else { held = false; }
-        if (held)
+        if (transform.parent != null && transform.parent.gameObject == playerObject)
         {
             boxCollider.enabled = false;
+            attackInterval = 10f / (float)playerObject.GetComponent<PlayerController>().GetAGI();
 
-            if (gameObject.Equals(playerObject.GetComponent<PlayerController>().GetWeapon())) { equipped = true; }
-            else { equipped = false; }
-
-            if (equipped)
+            if (gameObject.Equals(playerObject.GetComponent<PlayerController>().GetWeapon()))
             {
                 if (attackTimer <= attackInterval) { attackTimer += Time.fixedDeltaTime; }
                 spriteRenderer.enabled = true;
@@ -77,9 +71,11 @@ public class WeaponKnife : MonoBehaviour, Weapon
             spriteRenderer.enabled = true;
             boxCollider.enabled = true;
         }
+
+        
        
     }
-    public void OnAttack(GameObject playerObject, Vector2 mousePosition, float damageMod)
+    public void OnAttack()
     {
         attackTimer = 0;
 
@@ -90,10 +86,10 @@ public class WeaponKnife : MonoBehaviour, Weapon
             playerObject, // Creator
             projectileSprite, // Sprite of Projectile
             hitbox, // Size of hitbox
-            LayerMask.NameToLayer("Player Projectile"),
+            LayerMask.GetMask("Enemy"),
             new Vector2(playerObject.transform.position.x, playerObject.transform.position.y) + (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized, // Position
             (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized, // Direction and Velocity
-            (int)damageMod * damage, // Damage
+            playerObject.GetComponent<PlayerController>().GetSTR() * damage, // Damage
             knockback, // Knockback modifier
             duration, // Duration
             melee // Melee Weapon

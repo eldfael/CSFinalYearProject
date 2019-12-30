@@ -19,7 +19,7 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
     public float DETECTION_RADIUS = 10f;
     float IDLETIMER_THRESHHOLD = 0.5f;
     float CONTACTTIMER_THRESHHOLD = 0.5f;
-    float KNOCKBACK_THRESHHOLD = 0.2f;
+    float KNOCKBACK_THRESHHOLD = 0.1f;
 
     public int CONTACTDAMAGE = 2;
 
@@ -64,10 +64,16 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
             // If enemy isn't idle move towards the player
             if (!idle) { enemyRigidBody.velocity = playerVector.normalized * GRUNT_MOVESPEED; }
 
+            if (idle)
+            {
+                enemyRigidBody.velocity = Vector2.zero;
+            }
+
             if (contactTimer <= CONTACTTIMER_THRESHHOLD)
             {
                 contactTimer += Time.fixedDeltaTime;
             }
+            
             if (knockbackTimer <= KNOCKBACK_THRESHHOLD)
             {
                 enemyRigidBody.velocity = knockbackDirection;
@@ -102,5 +108,18 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
     { 
         knockbackDirection = direction;
         knockbackTimer = 0f; 
+    }
+
+    public int GetXPQuantity()
+    {
+        return 3;
+    }
+    public int GetMaxHP()
+    {
+        return 10;
+    }
+    public int GetEND()
+    {
+        return 0;
     }
 }

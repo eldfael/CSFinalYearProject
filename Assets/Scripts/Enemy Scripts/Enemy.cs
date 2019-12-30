@@ -5,23 +5,36 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
 
-    public GameObject XPOrb; // Must be added on prefab
-    public int XPOrbQuantity; // Must be set on prefab
-
+    public GameObject xpOrb; // Must be added on prefab
+    public GameObject[] drops; // Must be added on prefab
     public EnemyBehaviour enemyBehaviour; // Must be added on prefab
-    
+
     // Enemy stat decleration
-    public int enemy_MaxHP = 10;
+    int enemy_MaxHP;
     int enemy_CurrentHP;
-    public int enemy_END = 0; // Defaults to 0, unless set otherwise
+    int enemy_END;
+
+    LevelController levelController;
 
     private void Start()
     {
+        // Get the behaviour script attached to this gameobject
         enemyBehaviour = GetComponent<EnemyBehaviour>();
-        // Set the enemy's current HP to it's max HP
+
+        levelController = GameObject.Find("Level Controller").GetComponent<LevelController>();
+        levelController.SetEnemyCount(levelController.GetEnemyCount() + 1);
+        
+        // Get the enemy's max HP and set it's current HP to that value
+        enemy_MaxHP = enemyBehaviour.GetMaxHP();
         enemy_CurrentHP = enemy_MaxHP;
+        
+        // Get the enemy's Endurance
+        enemy_END = enemyBehaviour.GetEND();
+        
         // Run the enemy's start method
         enemyBehaviour.OnStart();
+
+
     }
 
 
@@ -31,7 +44,7 @@ public class Enemy : MonoBehaviour
         if (enemy_CurrentHP <= 0)
         {
             // If enemy's health reduced to 0 or below run the Death handling method
-            HandleDeath(gameObject, XPOrbQuantity);
+            HandleDeath();
         }
         else
         {
@@ -40,34 +53,7 @@ public class Enemy : MonoBehaviour
         }
 
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        // Check to see if the collision is with a projectile
-        if (collision.gameObject.tag.Equals("Projectile")) 
-        {
-            // Check to see if the projectile collision is a player projectile
-            if (collision.gameObject.GetComponent<ProjectileController>().GetCreator().CompareTag("Player"))
-            {
-                // Cause the enemy to take damage from the projectile, and check to see if the damage reduces the enemy's health below 0
-                // Reduces the damage of the projectile by the enemy's Endurance stat, however damage can not be less than 1
-                enemy_CurrentHP -= Mathf.Max(collision.gameObject.GetComponent<ProjectileController>().GetDamage() - enemy_END , 1);
-
-                if (enemy_CurrentHP <= 0)
-                {
-                    // If enemy's health reduced to 0 or below run the Death handling method
-                    HandleDeath(gameObject, XPOrbQuantity);
-                }
-                else if (enemyBehaviour.IsMoveable())
-                {
-                    // If enemy is moveable then call the knockback method
-                    enemyBehaviour.Knockback(collision.gameObject.GetComponent<ProjectileController>().GetKnockback());
-                }
-                
-            }
-        }
-    }
-
+    
     private void OnCollisionStay2D(Collision2D collision)
     {
         // If enemy is collinding with a player
@@ -78,14 +64,45 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void HandleDeath(GameObject enemyObject, int XPQuantity) 
+    public void HandleDeath() 
     {
         // If the enemy has any on death events they will be run here
         enemyBehaviour.OnDeath();
 
+        if (drops.Length > 0)
+        {
+            if (Random.Range(0f, 1f) >= 0.9)
+            {
+                Instantiate(drops[Random.Range(0, drops.Length - 1)], transform.position, Quaternion.identity);
+            }
+        }
+
         // Spawn XP orbs on enemy location then destroy the enemy game object
-        for (int x = 0; x < XPQuantity; x++) { Instantiate(XPOrb,transform.position,Quaternion.identity); }
-        Destroy(enemyObject);
+        for (int x = 0; x < enemyBehaviour.GetXPQuantity(); x++) { Instantiate(xpOrb,transform.position,Quaternion.identity); }
+
+        levelController.SetEnemyCount(levelController.GetEnemyCount() - 1);
+        if (levelController.GetEnemyCount() <= 0)
+        {
+            levelController.SpawnPortal(transform.position);
+        }
+
+        Destroy(gameObject);
+    }
+
+    public void HandleHit(int damage, Vector2 knockback)
+    {
+        enemy_CurrentHP -= Mathf.Max(damage - enemy_END, 1);
+        if (enemy_CurrentHP <= 0)
+        {
+            // If enemy's health reduced to 0 or below run the Death handling method
+            HandleDeath();
+        }
+        else if (enemyBehaviour.IsMoveable())
+        {
+            // If enemy is moveable then call the knockback method
+            enemyBehaviour.Knockback(knockback);
+        }
+
     }
 
 }

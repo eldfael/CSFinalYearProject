@@ -15,8 +15,6 @@ public class PlayerController : MonoBehaviour
     Weapon currentWeapon;
     int currentWeaponIndex = 0;
 
-    public GameObject projectile;
-    public Sprite projectileSprite;
 
     // Sprite Decleration
     public Sprite defaultSprite;
@@ -29,7 +27,10 @@ public class PlayerController : MonoBehaviour
     int stat_MaxSTA;
     int stat_CurrentSTA;
     float stat_STATimer = 0f;
-    float stat_STARegenTime = 1f;
+    float stat_STARegenTime;
+
+    float combatTime = 1f;
+    float combatTimer = 1f;
 
     int stat_TotalXP = 0;
     int stat_Level = 0;
@@ -69,8 +70,6 @@ public class PlayerController : MonoBehaviour
 
     public bool isActive;
 
-    public float PROJECTILE_SPRITE_OFFSET = 90f;
-
     // Inputs Decleration
     Vector2 mousePosition;
     Vector2 keyboardDirection;
@@ -85,13 +84,12 @@ public class PlayerController : MonoBehaviour
     {
         playerRigidyBody = GetComponent<Rigidbody2D>();
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
-        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
 
-        stat_MaxHP = 10;
-        stat_CurrentHP = stat_MaxHP;
+        UpdateStats();
 
-        stat_MaxSTA = 10;
+        stat_CurrentHP = stat_MaxHP;
         stat_CurrentSTA = stat_MaxSTA;
 
         stat_TotalXP = 0;
@@ -99,9 +97,10 @@ public class PlayerController : MonoBehaviour
         //stat_Points = 0;
 
         isActive = true;
+        
+        stat_STARegenTime =  5 / ((float)stat_AGI + 5);
 
-        weapons[0] = GameObject.Find("Knife");
-        weapons[1] = GameObject.Find("Sword");
+
     }
 
     void Awake()
@@ -143,6 +142,8 @@ public class PlayerController : MonoBehaviour
             HandleAttacking();
 
             HandleTimers();
+
+            HandleInteraction();
         }
 
         ResetKeyDown();
@@ -151,34 +152,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Projectile"))
-        {
-            HandleDamage(collision.gameObject.GetComponent<ProjectileController>().GetDamage());
-        }
+
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Portal"))
-        {
-            gameController.SwapScene();
-        }
-        if (collision.CompareTag("Weapon"))
-        {
-            if (interactNext)
-            {
 
-                interactNext = false;
-                weapons[currentWeaponIndex].transform.parent = null;
-                SceneManager.MoveGameObjectToScene(weapons[currentWeaponIndex], SceneManager.GetActiveScene());
-                weapons[currentWeaponIndex].GetComponent<Weapon>().SetSortingLayer("Entity");
-                weapons[currentWeaponIndex].transform.position = gameObject.transform.position;
-
-                weapons[currentWeaponIndex] = collision.gameObject;
-                weapons[currentWeaponIndex].GetComponent<Weapon>().SetSortingLayer("Weapon");
-                collision.gameObject.transform.parent = gameObject.transform;
-            }
-        }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -249,8 +228,33 @@ public class PlayerController : MonoBehaviour
     private void ResetKeyDown()
     {
         // Called in FixedUpdate
+
+
         attackNext = false;
-        // interactNext = false;
+        interactNext = false;
+    }
+
+    private void HandleInteraction()
+    {
+        // Called in FixedUpdate
+
+        if (interactNext)
+        {
+            interactNext = false;
+            Collider2D collider = Physics2D.OverlapBox(transform.position, new Vector2(1f, 1f), 0, LayerMask.GetMask("Weapon") + LayerMask.GetMask("Interactable"));
+            if (collider != null)
+            {
+                if (collider.CompareTag("Weapon"))
+                {
+                    EquipWeapon(collider);
+                }
+
+                if (collider.CompareTag("Portal"))
+                {
+                    gameController.SwapScene();
+                }
+            }
+        }
     }
 
     private void HandleRolling()
@@ -260,6 +264,8 @@ public class PlayerController : MonoBehaviour
         // Check to see if the player has an input direction and that the player is not already rolling if the rolling key is pressed (and stamina above 2)
         if (rollKeyDown && keyboardDirection.magnitude != 0 && !rollBoolean && stat_CurrentSTA >= 2)
         {
+            // Set to in combat
+            combatTimer = 0f;
             // Remove 1 Stamina
             HandleSTAChange(-2);
             // Set the direction of the roll to the current direction of keyboard input
@@ -272,34 +278,37 @@ public class PlayerController : MonoBehaviour
             rollTimer = 0.0f;
 
             // Temporary until animations are added // Change the sprite of the player to show rolling
-            playerSpriteRenderer.sprite = rollingSprite;
+            playerSpriteRenderer.color = Color.magenta;
         }
     }
 
     private void HandleAttacking()
     {
         // Called in FixedUpdate
+        if (weapons[currentWeaponIndex] != null && !rollBoolean)
+        {
+            currentWeapon = weapons[currentWeaponIndex].GetComponent<Weapon>();
 
-        currentWeapon = weapons[currentWeaponIndex].GetComponent<Weapon>();
-        
-        
-        if (currentWeapon.IsAutomatic())
-        {
-            if (attackKeyHeld && currentWeapon.IsReady())
+
+            if (currentWeapon.IsAutomatic())
             {
-                currentWeapon.OnAttack(gameObject,mousePosition,stat_STR);
-                HandleSTAChange(-currentWeapon.GetSTACost());
+                if (attackKeyHeld && currentWeapon.IsReady() && currentWeapon.GetSTACost() <= stat_CurrentSTA)
+                {
+                    combatTimer = 0f;
+                    currentWeapon.OnAttack();
+                    HandleSTAChange(-currentWeapon.GetSTACost());
+                }
+            }
+            else
+            {
+                if (attackNext && currentWeapon.IsReady() && currentWeapon.GetSTACost() <= stat_CurrentSTA)
+                {
+                    combatTimer = 0f;
+                    currentWeapon.OnAttack();
+                    HandleSTAChange(-currentWeapon.GetSTACost());
+                }
             }
         }
-        else
-        {
-            if (attackNext && currentWeapon.IsReady())
-            {
-                currentWeapon.OnAttack(gameObject, mousePosition, stat_STR);
-                HandleSTAChange(-currentWeapon.GetSTACost());
-            }
-        }
-        
     }
 
     private void HandleTimers()
@@ -313,10 +322,18 @@ public class PlayerController : MonoBehaviour
 
         // Rolling Timers
         if (rollBoolean) { rollTimer += Time.fixedDeltaTime; }
-        if (rollTimer >= ROLL_DURATION) { rollBoolean = false; playerSpriteRenderer.sprite = defaultSprite; gameObject.layer = LayerMask.NameToLayer("Player"); }
+        if (rollTimer >= ROLL_DURATION) { rollBoolean = false; playerSpriteRenderer.color = Color.red; gameObject.layer = LayerMask.NameToLayer("Player"); }
 
         // Stamina regeneration
-        if (stat_CurrentSTA < stat_MaxSTA) { stat_STATimer += Time.fixedDeltaTime; }
+        if (combatTimer >= combatTime)
+        {
+            if (stat_CurrentSTA < stat_MaxSTA) { stat_STATimer += Time.fixedDeltaTime; }
+        }
+        else
+        {
+            combatTimer += Time.fixedDeltaTime;
+        }
+        
 
     }
 
@@ -340,6 +357,10 @@ public class PlayerController : MonoBehaviour
     public void HandleXPGain(int xp)
     {
         stat_TotalXP += xp;
+    }
+    public void HandleHPGain(int hp)
+    {
+        stat_CurrentHP = Mathf.Clamp(stat_CurrentHP + hp, 0, stat_MaxHP);
     }
 
     void HandleLevelUp()
@@ -371,7 +392,7 @@ public class PlayerController : MonoBehaviour
         // Called in FixedUpdate
 
         // Regen stamina
-        if (stat_STATimer >= stat_STARegenTime)
+        if (stat_STATimer >= stat_STARegenTime && combatTimer >= combatTime)
         {
             HandleSTAChange(1);
             stat_STATimer = 0f;
@@ -380,7 +401,48 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void HandleSTAChange(int change) { stat_CurrentSTA = Mathf.Clamp(stat_CurrentSTA += change, 0, stat_MaxSTA); }
+    public void EquipWeapon(Collider2D collision)
+    {
+        if (weapons[0] != null && weapons[1] != null)
+        {
+            Debug.Log(weapons.Length);
+
+            weapons[currentWeaponIndex].transform.parent = null;
+            SceneManager.MoveGameObjectToScene(weapons[currentWeaponIndex], SceneManager.GetActiveScene());
+            weapons[currentWeaponIndex].GetComponent<Weapon>().SetSortingLayer("Collectable");
+            weapons[currentWeaponIndex].transform.position = gameObject.transform.position;
+
+            weapons[currentWeaponIndex] = collision.gameObject;
+            weapons[currentWeaponIndex].GetComponent<Weapon>().SetSortingLayer("Weapon");
+            weapons[currentWeaponIndex].transform.parent = gameObject.transform;
+        }
+        else if (weapons[0] != null || weapons[1] != null)
+        {
+            if (currentWeaponIndex == 1)
+            {
+                weapons[0] = collision.gameObject;
+                weapons[0].GetComponent<Weapon>().SetSortingLayer("Weapon");
+                weapons[0].transform.parent = gameObject.transform;
+            }
+            else
+            {
+                weapons[1] = collision.gameObject;
+                weapons[1].GetComponent<Weapon>().SetSortingLayer("Weapon");
+                weapons[1].transform.parent = gameObject.transform;
+            }
+        }
+        else
+        {
+            weapons[currentWeaponIndex] = collision.gameObject;
+            weapons[currentWeaponIndex].GetComponent<Weapon>().SetSortingLayer("Weapon");
+            weapons[currentWeaponIndex].transform.parent = gameObject.transform;
+        }
+    }
+
+    public void HandleSTAChange(int change) 
+    { 
+        stat_CurrentSTA = Mathf.Clamp(stat_CurrentSTA += change, 0, stat_MaxSTA); 
+    }
 
     void HandleDeath()
     {
@@ -390,7 +452,7 @@ public class PlayerController : MonoBehaviour
     public void SetInactive()
     {
         rollBoolean = false; 
-        playerSpriteRenderer.sprite = defaultSprite; 
+        playerSpriteRenderer.color = Color.red; 
         gameObject.layer = LayerMask.NameToLayer("Player");
         playerRigidyBody.velocity = Vector2.zero;
         isActive = false;
@@ -419,8 +481,11 @@ public class PlayerController : MonoBehaviour
 
         // Updates variables based on current player stats
 
-        stat_MaxSTA = stat_STR * 2;
-        stat_MaxHP = stat_VIT * 2;
+        stat_MaxSTA = 6 + stat_STR / 2;
+        stat_MaxHP = 6 + stat_VIT / 2;
+        stat_STARegenTime = 3 / ((float)stat_AGI + 5);
+
+        
         
     }
 

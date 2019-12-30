@@ -78,7 +78,7 @@ public class WeaponSword : MonoBehaviour, Weapon
         }
 
     }
-    public void OnAttack(GameObject playerObject, Vector2 mousePosition, float damageMod)
+    public void OnAttack()
     {
         attackTimer = 0;
 
@@ -89,10 +89,10 @@ public class WeaponSword : MonoBehaviour, Weapon
             playerObject, // Creator
             projectileSprite, // Sprite of Projectile
             hitbox, // Size of hitbox
-            LayerMask.NameToLayer("Player Projectile"),
+            LayerMask.GetMask("Enemy"),
             new Vector2(playerObject.transform.position.x, playerObject.transform.position.y) + (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized * 1.5f, // Position
             (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized, // Direction and Velocity
-            (int)damageMod * damage, // Damage
+            playerObject.GetComponent<PlayerController>().GetSTR() * damage, // Damage
             knockback, // Knockback modifier
             duration, // Duration
             melee // Melee Weapon
@@ -125,4 +125,5 @@ public class WeaponSword : MonoBehaviour, Weapon
     {
         spriteRenderer.sortingLayerName = layer;
     }
+
 }
