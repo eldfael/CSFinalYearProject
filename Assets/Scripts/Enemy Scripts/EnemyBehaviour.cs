@@ -12,6 +12,6 @@ public interface EnemyBehaviour
     void Knockback(Vector2 direction);
     int GetXPQuantity();
     int GetMaxHP();
-    int GetEND();
+    int GetRES();
 
 }

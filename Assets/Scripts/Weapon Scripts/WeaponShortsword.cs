@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponSkeleton : MonoBehaviour, Weapon
+public class WeaponShortsword : MonoBehaviour, Weapon
 {
     float attackTimer;
-    float attackInterval;
+    float attackInterval = 0.5f;
 
-    float duration;
-    float speed;
-    float knockback;
-    bool melee;
-    bool automatic;
-    int damage;
-    int staminaCost;
-    Vector2 hitbox;
+    float duration = 0.05f;
+    float speed = 0.75f;
+    float knockback = 5f;
+    bool melee = true;
+    bool automatic = false;
+    int damage = 6;
+    int staminaCost = 2;
+    Vector2 hitbox = new Vector2(2f,2f);
 
     Camera mainCamera;
     Vector2 mousePosition;
@@ -28,7 +28,6 @@ public class WeaponSkeleton : MonoBehaviour, Weapon
 
     bool equipped;
     bool held;
-
 
     public void Start()
     {
@@ -57,6 +56,7 @@ public class WeaponSkeleton : MonoBehaviour, Weapon
         if (held)
         {
             boxCollider.enabled = false;
+            
 
             if (gameObject.Equals(playerObject.GetComponent<PlayerController>().GetWeapon())) { equipped = true; }
             else { equipped = false; }
@@ -99,7 +99,7 @@ public class WeaponSkeleton : MonoBehaviour, Weapon
             LayerMask.GetMask("Enemy"),
             new Vector2(playerObject.transform.position.x, playerObject.transform.position.y) + (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized * ( 3 * hitbox.x / 4 ), // Position
             (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized * speed, // Direction and Velocity
-            damage, // Damage
+            damage + ( playerObject.GetComponent<PlayerController>().GetAGI() / 2 ), // Damage
             knockback, // Knockback modifier
             duration, // Duration
             melee // Melee Weapon

@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
         enemy_CurrentHP = enemy_MaxHP;
         
         // Get the enemy's Endurance
-        enemy_END = enemyBehaviour.GetEND();
+        enemy_END = enemyBehaviour.GetRES();
         
         // Run the enemy's start method
         enemyBehaviour.OnStart();

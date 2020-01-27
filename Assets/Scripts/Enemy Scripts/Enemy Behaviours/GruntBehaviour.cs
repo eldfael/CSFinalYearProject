@@ -22,6 +22,7 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
     float KNOCKBACK_THRESHHOLD = 0.1f;
 
     public int CONTACTDAMAGE = 2;
+    public int MAXHP = 20;
 
     public void OnStart()
     {
@@ -110,9 +111,9 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
     }
     public int GetMaxHP()
     {
-        return 10;
+        return MAXHP;
     }
-    public int GetEND()
+    public int GetRES()
     {
         return 0;
     }
