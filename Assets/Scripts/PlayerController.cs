@@ -29,18 +29,26 @@ public class PlayerController : MonoBehaviour
     float stat_STATimer = 0f;
     float stat_STARegenTime;
 
-    float combatTime = 1f;
-    float combatTimer = 1f;
+    float combatTime = 1.5f;
+    float combatTimer = 1.5f;
+
+    float contactTime = 0.5f;
+    float contactTimer = 0.5f;
 
     int stat_TotalXP = 0;
     int stat_Level = 0;
     int stat_Points = 0;
-
-    int stat_END = 0;
+    
+    int stat_VIT = 5;
+    int stat_END = 5;
 
     int stat_STR = 5;
     int stat_AGI = 5;
-    int stat_VIT = 5;
+    int stat_SKI = 5;
+    int stat_HEA = 5;
+
+    int stat_RES = 0;
+    
 
     // Movement Decleration
     public float MOVEMENT_SPEED = 6.0f;
@@ -97,10 +105,7 @@ public class PlayerController : MonoBehaviour
         //stat_Points = 0;
 
         isActive = true;
-        
-        stat_STARegenTime =  5 / ((float)stat_AGI + 5);
-
-
+       
     }
 
     void Awake()
@@ -333,6 +338,12 @@ public class PlayerController : MonoBehaviour
         {
             combatTimer += Time.fixedDeltaTime;
         }
+
+        // Contact Timer
+        if (contactTimer <= contactTime)
+        {
+            contactTimer += Time.fixedDeltaTime;
+        }
         
 
     }
@@ -350,7 +361,7 @@ public class PlayerController : MonoBehaviour
 
     public void HandleDamage(int damage)
     {
-        stat_CurrentHP -= damage - stat_END;
+        stat_CurrentHP -= damage - stat_RES;
         HandleHP();
     }
 
@@ -481,18 +492,29 @@ public class PlayerController : MonoBehaviour
 
         // Updates variables based on current player stats
 
-        stat_MaxSTA = 6 + stat_STR / 2;
-        stat_MaxHP = 6 + stat_VIT / 2;
-        stat_STARegenTime = 3 / ((float)stat_AGI + 5);
+        stat_MaxSTA = 5 + stat_END;
+        stat_MaxHP = 5 + stat_VIT;
 
-        
-        
+        stat_STARegenTime = 2f / (float)stat_MaxSTA;
+
+
+    }
+
+    public void HandleContactDamage(int damage) {
+        if (contactTimer >= contactTime)
+        {
+            HandleDamage(damage);
+            contactTimer = 0;
+        }
     }
 
     // Get methods for variables
-    public int GetSTR() { return stat_STR;}
+    public int GetSTR() { return stat_STR; }
     public int GetAGI() { return stat_AGI; }
+    public int GetSKI() { return stat_SKI; }
+    public int GetHEA() { return stat_HEA; }
     public int GetVIT() { return stat_VIT; }
+    public int GetEND() { return stat_END; }
     public int GetLevel() { return stat_Level; }
     public int GetTotalXP() { return stat_TotalXP; }
     public int GetCurrentHP() { return stat_CurrentHP; }
@@ -504,7 +526,10 @@ public class PlayerController : MonoBehaviour
     // Set methods for variables
     public void SetSTR(int newSTR) { stat_STR = newSTR; }
     public void SetAGI(int newAGI) { stat_AGI = newAGI; }
+    public void SetSKI(int newSKI) { stat_SKI = newSKI; }
+    public void SetHEA(int newHEA) { stat_HEA = newHEA; }
     public void SetVIT(int newVIT) { stat_VIT = newVIT; }
+    public void SetEND(int newEND) { stat_END = newEND; }
     public void SetLevel(int newLevel) { stat_Level = newLevel; }
 
 

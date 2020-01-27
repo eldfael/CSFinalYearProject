@@ -69,10 +69,7 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
                 enemyRigidBody.velocity = Vector2.zero;
             }
 
-            if (contactTimer <= CONTACTTIMER_THRESHHOLD)
-            {
-                contactTimer += Time.fixedDeltaTime;
-            }
+
             
             if (knockbackTimer <= KNOCKBACK_THRESHHOLD)
             {
@@ -95,11 +92,8 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
     public void OnContact()
     {
         // If contact timer is at the threshhold damage player for contact
-        if (contactTimer >= CONTACTTIMER_THRESHHOLD) 
-        {
-            contactTimer = 0;
-            playerObject.GetComponent<PlayerController>().HandleDamage(CONTACTDAMAGE);
-        }
+        playerObject.GetComponent<PlayerController>().HandleContactDamage(CONTACTDAMAGE);
+        
     }
 
     public bool IsMoveable() { return true; }
