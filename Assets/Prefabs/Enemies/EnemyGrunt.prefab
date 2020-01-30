@@ -63,8 +63,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GRUNT_MOVESPEED: 3
-  DETECTION_RADIUS: 10
+  DETECTION_RADIUS: 6
   CONTACTDAMAGE: 2
+  MAXHP: 20
 --- !u!61 &2726702213892767485
 BoxCollider2D:
   m_ObjectHideFlags: 0

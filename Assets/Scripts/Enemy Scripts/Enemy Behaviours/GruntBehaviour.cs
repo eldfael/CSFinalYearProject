@@ -16,7 +16,7 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
     float contactTimer;
 
     public float GRUNT_MOVESPEED = 3f;
-    public float DETECTION_RADIUS = 10f;
+    public float DETECTION_RADIUS = 6f;
     float IDLETIMER_THRESHHOLD = 0.5f;
     float CONTACTTIMER_THRESHHOLD = 0.5f;
     float KNOCKBACK_THRESHHOLD = 0.1f;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class WeaponShortsword : MonoBehaviour, Weapon
+public class WeaponHammer : MonoBehaviour, Weapon
 {
     float attackTimer;
     float attackInterval = 0.5f;
@@ -15,7 +15,7 @@ public class WeaponShortsword : MonoBehaviour, Weapon
     bool automatic = false;
     int damage = 6;
     int staminaCost = 2;
-    Vector2 hitbox = new Vector2(2f,2f);
+    Vector2 hitbox = new Vector2(2f, 2f);
 
     Camera mainCamera;
     Vector2 mousePosition;
@@ -57,7 +57,7 @@ public class WeaponShortsword : MonoBehaviour, Weapon
         if (held)
         {
             boxCollider.enabled = false;
-            
+
 
             if (gameObject.Equals(playerObject.GetComponent<PlayerController>().GetWeapon())) { equipped = true; }
             else { equipped = false; }
@@ -98,9 +98,9 @@ public class WeaponShortsword : MonoBehaviour, Weapon
             projectileSprite, // Sprite of Projectile
             hitbox, // Size of hitbox
             LayerMask.GetMask("Enemy"),
-            new Vector2(playerObject.transform.position.x, playerObject.transform.position.y) + (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized * ( 3 * hitbox.x / 4 ), // Position
+            new Vector2(playerObject.transform.position.x, playerObject.transform.position.y) + (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized * (3 * hitbox.x / 4), // Position
             (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized * speed, // Direction and Velocity
-            damage + ( playerObject.GetComponent<PlayerController>().GetAGI() / 2 ), // Damage
+            damage + (playerObject.GetComponent<PlayerController>().GetSTR() / 2), // Damage
             knockback, // Knockback modifier
             duration, // Duration
             melee // Melee Weapon

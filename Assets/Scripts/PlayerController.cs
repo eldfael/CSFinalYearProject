@@ -88,6 +88,8 @@ public class PlayerController : MonoBehaviour
     KeyCode interactKey = KeyCode.E;
     KeyCode swapWeaponKey = KeyCode.Space;
 
+    
+
     void Start()
     {
         playerRigidyBody = GetComponent<Rigidbody2D>();
@@ -216,6 +218,7 @@ public class PlayerController : MonoBehaviour
 
         // Check to see if the key to interact has been pushed
         interactKeyDown = Input.GetKeyDown(interactKey);
+
 
 
 

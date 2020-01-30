@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WeaponSkeleton : MonoBehaviour, Weapon
 {
@@ -105,7 +106,8 @@ public class WeaponSkeleton : MonoBehaviour, Weapon
             melee // Melee Weapon
             );
 
-
+        projectile.transform.parent = null;
+        SceneManager.MoveGameObjectToScene(projectile, SceneManager.GetActiveScene());
         projectile.GetComponent<Transform>().Rotate(0, 0, Mathf.Atan2(mousePosition.y - playerObject.transform.position.y, mousePosition.x - playerObject.transform.position.x) * Mathf.Rad2Deg + 0f, Space.Self);
     }
     public bool IsAutomatic()

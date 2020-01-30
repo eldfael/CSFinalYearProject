@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2975469186204831090
+--- !u!1 &1285928280173169901
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,40 +8,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2975469186204831088}
-  - component: {fileID: 2975469186204831091}
+  - component: {fileID: 7009640583022426524}
+  - component: {fileID: 8033314593787250345}
   m_Layer: 15
-  m_Name: Bow
+  m_Name: Longsword
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2975469186204831088
+--- !u!4 &7009640583022426524
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2975469186204831090}
+  m_GameObject: {fileID: 1285928280173169901}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.4671772, y: 3.535041, z: -9.905231}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2975469186204831091
+--- !u!114 &8033314593787250345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2975469186204831090}
+  m_GameObject: {fileID: 1285928280173169901}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a95fab9120d7a1b44a2d9a3876a05ccc, type: 3}
+  m_Script: {fileID: 11500000, guid: b546b2364074997408c66d3b364fdf30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSprite: {fileID: 21300000, guid: ecc44bf6135ff224d87da71ded9e6481, type: 3}
-  weaponSprite: {fileID: 21300000, guid: 69265d9e9f232a74d8e623a3d341ea6f, type: 3}
+  projectileSprite: {fileID: 21300000, guid: af8ea1aa3483b8546b995fb622a7ddd5, type: 3}
+  weaponSprite: {fileID: 21300000, guid: 423198799d30e8c48a49ac85eda8e675, type: 3}

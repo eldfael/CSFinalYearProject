@@ -18,7 +18,8 @@ public class GameController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            playerObject.GetComponent<PlayerController>().SetStatPoints(1);
+
+            playerObject.GetComponent<PlayerController>().HandleXPGain(5);
         }
 
     }
