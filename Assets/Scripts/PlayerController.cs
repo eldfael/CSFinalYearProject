@@ -187,8 +187,8 @@ public class PlayerController : MonoBehaviour
 
         // Move the camera based on the position of the mouse and the player to be at a point inbetween
         mainCamera.transform.position = new Vector3(
-            (transform.position.x * 2.5f + mousePosition.x) / 3.5f,
-            (transform.position.y * 2.5f + mousePosition.y) / 3.5f,
+            (transform.position.x * 4f + mousePosition.x) / 5f,
+            (transform.position.y * 4f + mousePosition.y) / 5f,
             -100);
     }
 
@@ -495,7 +495,7 @@ public class PlayerController : MonoBehaviour
         stat_MaxSTA = 5 + stat_END;
         stat_MaxHP = 5 + stat_VIT;
 
-        stat_STARegenTime = 2f / (float)stat_MaxSTA;
+        stat_STARegenTime = 1f / (float)stat_MaxSTA;
 
 
     }
