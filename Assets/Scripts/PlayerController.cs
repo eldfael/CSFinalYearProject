@@ -24,14 +24,6 @@ public class PlayerController : MonoBehaviour
     int stat_MaxHP;
     int stat_CurrentHP;
 
-    int stat_MaxSTA;
-    int stat_CurrentSTA;
-    float stat_STATimer = 0f;
-    float stat_STARegenTime;
-
-    float combatTime = 1.5f;
-    float combatTimer = 1.5f;
-
     float contactTime = 0.5f;
     float contactTimer = 0.5f;
 
@@ -40,14 +32,13 @@ public class PlayerController : MonoBehaviour
     int stat_Points = 0;
     
     int stat_VIT = 5;
-    int stat_END = 5;
 
     int stat_STR = 5;
     int stat_AGI = 5;
     int stat_SKI = 5;
     int stat_HEA = 5;
 
-    int stat_RES = 0;
+    int stat_END = 0;
     
 
     // Movement Decleration
@@ -100,7 +91,6 @@ public class PlayerController : MonoBehaviour
         UpdateStats();
 
         stat_CurrentHP = stat_MaxHP;
-        stat_CurrentSTA = stat_MaxSTA;
 
         stat_TotalXP = 0;
         stat_Level = 0;
@@ -133,8 +123,6 @@ public class PlayerController : MonoBehaviour
     {
 
         HandleHP();
-
-        HandleSTA();
 
         UpdateStats();
 
@@ -270,12 +258,9 @@ public class PlayerController : MonoBehaviour
         // Called in Update
 
         // Check to see if the player has an input direction and that the player is not already rolling if the rolling key is pressed (and stamina above 2)
-        if (rollKeyDown && keyboardDirection.magnitude != 0 && !rollBoolean && stat_CurrentSTA >= 2)
+        if (rollKeyDown && keyboardDirection.magnitude != 0 && !rollBoolean)
         {
-            // Set to in combat
-            combatTimer = 0f;
-            // Remove 1 Stamina
-            HandleSTAChange(-2);
+
             // Set the direction of the roll to the current direction of keyboard input
             rollDirection = keyboardDirection.normalized;
             // Change the layer of the player to "PlayerRolling" instead of "Player"
@@ -300,20 +285,16 @@ public class PlayerController : MonoBehaviour
 
             if (currentWeapon.IsAutomatic())
             {
-                if (attackKeyHeld && currentWeapon.IsReady() && currentWeapon.GetSTACost() <= stat_CurrentSTA)
+                if (attackKeyHeld && currentWeapon.IsReady())
                 {
-                    combatTimer = 0f;
                     currentWeapon.OnAttack();
-                    HandleSTAChange(-currentWeapon.GetSTACost());
                 }
             }
             else
             {
-                if (attackNext && currentWeapon.IsReady() && currentWeapon.GetSTACost() <= stat_CurrentSTA)
+                if (attackNext && currentWeapon.IsReady())
                 {
-                    combatTimer = 0f;
                     currentWeapon.OnAttack();
-                    HandleSTAChange(-currentWeapon.GetSTACost());
                 }
             }
         }
@@ -331,16 +312,6 @@ public class PlayerController : MonoBehaviour
         // Rolling Timers
         if (rollBoolean) { rollTimer += Time.fixedDeltaTime; }
         if (rollTimer >= ROLL_DURATION) { rollBoolean = false; playerSpriteRenderer.color = Color.red; gameObject.layer = LayerMask.NameToLayer("Player"); }
-
-        // Stamina regeneration
-        if (combatTimer >= combatTime)
-        {
-            if (stat_CurrentSTA < stat_MaxSTA) { stat_STATimer += Time.fixedDeltaTime; }
-        }
-        else
-        {
-            combatTimer += Time.fixedDeltaTime;
-        }
 
         // Contact Timer
         if (contactTimer <= contactTime)
@@ -364,7 +335,7 @@ public class PlayerController : MonoBehaviour
 
     public void HandleDamage(int damage)
     {
-        stat_CurrentHP -= damage - stat_RES;
+        stat_CurrentHP -= damage - stat_END;
         HandleHP();
     }
 
@@ -399,20 +370,6 @@ public class PlayerController : MonoBehaviour
         stat_CurrentHP = Mathf.Clamp(stat_CurrentHP, 0, stat_MaxHP);
         // Check to see if HP is at 0 and handle player death if it is at 0
         if (stat_CurrentHP == 0) { HandleDeath(); }
-    }
-
-    void HandleSTA()
-    {
-        // Called in FixedUpdate
-
-        // Regen stamina
-        if (stat_STATimer >= stat_STARegenTime && combatTimer >= combatTime)
-        {
-            HandleSTAChange(1);
-            stat_STATimer = 0f;
-        }
-
-
     }
 
     public void EquipWeapon(Collider2D collision)
@@ -453,10 +410,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void HandleSTAChange(int change) 
-    { 
-        stat_CurrentSTA = Mathf.Clamp(stat_CurrentSTA += change, 0, stat_MaxSTA); 
-    }
 
     void HandleDeath()
     {
@@ -495,10 +448,7 @@ public class PlayerController : MonoBehaviour
 
         // Updates variables based on current player stats
 
-        stat_MaxSTA = 5 + stat_END;
         stat_MaxHP = 5 + stat_VIT;
-
-        stat_STARegenTime = 1f / (float)stat_MaxSTA;
 
 
     }
@@ -522,8 +472,6 @@ public class PlayerController : MonoBehaviour
     public int GetTotalXP() { return stat_TotalXP; }
     public int GetCurrentHP() { return stat_CurrentHP; }
     public int GetMaxHP() { return stat_MaxHP; }
-    public int GetCurrentSTA() { return stat_CurrentSTA; }
-    public int GetMaxSTA() { return stat_MaxSTA; }
     public GameObject GetWeapon() { return weapons[currentWeaponIndex]; }
 
     // Set methods for variables

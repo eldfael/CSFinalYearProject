@@ -10,7 +10,7 @@ public class XPOrbController : MonoBehaviour
     bool collectable;
     Vector2 initialDirection;
     float timer;
-    float aliveTime = 6f;
+    float aliveTime = 10f;
     Vector2 playerDistance;
     
     Sprite sprite;
