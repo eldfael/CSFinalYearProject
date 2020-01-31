@@ -34,7 +34,7 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
 
         if (Random.Range(0,2) == 1)
         {
-            idleTime = Random.Range(1f, 2f);
+            idleTime = Random.Range(1f, 1.5f);
         }
         else
         {
@@ -53,8 +53,11 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
                 idle = false;
                 idleTimer = 0f;
 
-                movementTime = Random.Range(2f, 3f);
-                movementDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 1.5f;
+                movementTime = Random.Range(1.5f, 2.5f);
+                movementDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 2f;
+
+                // add raycasting to not hit walls :)
+
             }
             else
             {
@@ -85,18 +88,15 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
                 for (int x = -1; x < 2; x++)
                 {
                     if (y != 0 || x != 0) {
-                        Debug.Log(x);
-                        Debug.Log(y);
-                        Debug.Log("SHOOT");
                         GameObject projectile = new GameObject();
                         ProjectileController projectileController = projectile.AddComponent<ProjectileController>();
 
                         projectileController.Create(
                             gameObject, // Creator
                             projectileSprite, // Sprite of Projectile
-                            new Vector2(0.7f, 0.7f), // Size of hitbox
+                            new Vector2(0.6f, 0.6f), // Size of hitbox
                             LayerMask.GetMask("Player"),
-                            transform.position, // Position
+                            (Vector2)transform.position + (new Vector2(x,y).normalized * 0.5f), // Position
                             new Vector2(x,y).normalized * 7f, // Direction and Velocity
                             2, // Damage
                             0f, // Knockback modifier
@@ -120,6 +120,7 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
             enemyRigidBody.velocity = knockbackDirection;
             knockbackTimer += Time.fixedDeltaTime;
         }
+        
         else if (idle)
         {
             enemyRigidBody.velocity = Vector2.zero;
@@ -146,7 +147,7 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
 
     }
 
-    public void OnContact()
+    public void OnContact(Collision2D collision)
     {
 
     }

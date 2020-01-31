@@ -110,7 +110,6 @@ public class ProjectileController : MonoBehaviour
         gameObject.tag = "Projectile";
         gameObject.name = "Projectile";
 
-        gameObject.transform.SetParent(creator.transform);
     }
 
     public int GetDamage() { return damage; }

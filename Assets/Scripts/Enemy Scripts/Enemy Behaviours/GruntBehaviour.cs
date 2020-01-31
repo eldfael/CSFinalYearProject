@@ -90,11 +90,14 @@ public class GruntBehaviour : MonoBehaviour, EnemyBehaviour
     
     }
 
-    public void OnContact()
+    public void OnContact(Collision2D collision)
     {
         // If contact timer is at the threshhold damage player for contact
-        playerObject.GetComponent<PlayerController>().HandleContactDamage(CONTACTDAMAGE);
-        
+        if (collision.gameObject.Equals(playerObject))
+        {
+            playerObject.GetComponent<PlayerController>().HandleContactDamage(CONTACTDAMAGE);
+        }
+         
     }
 
     public bool IsMoveable() { return true; }

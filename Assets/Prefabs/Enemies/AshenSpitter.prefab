@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2853054646305899423}
   - component: {fileID: 2853054646305899420}
-  - component: {fileID: 2853054646305899421}
   - component: {fileID: 2853054646305899418}
   - component: {fileID: 2853054646305899419}
   - component: {fileID: 2853054646305899416}
+  - component: {fileID: 5749994406998317494}
   m_Layer: 11
   m_Name: AshenSpitter
   m_TagString: Enemy
@@ -50,32 +50,6 @@ MonoBehaviour:
   xpOrb: {fileID: 4112610165584959008, guid: 2e7b2b9644392294e988b852ac1b566b, type: 3}
   drops:
   - {fileID: 2050998697386448944, guid: 408a6389d70fc0e4a9e7cabdff791d54, type: 3}
---- !u!61 &2853054646305899421
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2853054646305899417}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.78, y: 0.78}
-  m_EdgeRadius: 0
 --- !u!212 &2853054646305899418
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -112,7 +86,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -259756205
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1219d7af80487cb46932deee99aff245, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -137,7 +111,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 20
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -163,3 +137,19 @@ MonoBehaviour:
   XPQUANTITY: 5
   MOVEABLE: 1
   projectileSprite: {fileID: 21300000, guid: 4ac07dfdf82931a49b4b69bab7b5fa22, type: 3}
+--- !u!58 &5749994406998317494
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2853054646305899417}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.3

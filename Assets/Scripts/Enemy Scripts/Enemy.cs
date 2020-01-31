@@ -56,12 +56,7 @@ public class Enemy : MonoBehaviour
     
     private void OnCollisionStay2D(Collision2D collision)
     {
-        // If enemy is collinding with a player
-        if (collision.gameObject.tag.Equals("Player"))
-        {
-            // If enemy has contact effect activate it now
-            enemyBehaviour.OnContact();
-        }
+        enemyBehaviour.OnContact(collision);
     }
 
     public void HandleDeath() 

@@ -7,7 +7,7 @@ public interface EnemyBehaviour
     void OnStart();
     void OnFixed();
     void OnDeath();
-    void OnContact();
+    void OnContact(Collision2D collision);
     bool IsMoveable();
     void Knockback(Vector2 direction);
     int GetXPQuantity();
