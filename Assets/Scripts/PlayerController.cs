@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer playerSpriteRenderer;
     Camera mainCamera;
     GameController gameController;
+    Animator playerAnimator;
 
     GameObject[] weapons = new GameObject[2];
     Weapon currentWeapon;
@@ -87,6 +88,7 @@ public class PlayerController : MonoBehaviour
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        playerAnimator = GetComponent<Animator>();
 
         UpdateStats();
 
@@ -97,6 +99,8 @@ public class PlayerController : MonoBehaviour
         //stat_Points = 0;
 
         isActive = true;
+
+        playerSpriteRenderer.sortingLayerName = "Player";
        
     }
 
@@ -139,8 +143,12 @@ public class PlayerController : MonoBehaviour
             HandleTimers();
 
             HandleInteraction();
-        }
 
+            
+        }
+        
+        HandleAnimation();
+        
         ResetKeyDown();
 
     }
@@ -169,6 +177,26 @@ public class PlayerController : MonoBehaviour
         if (!rollBoolean) playerRigidyBody.velocity = keyboardDirection.normalized * MOVEMENT_SPEED;
         // Else the player must be rolling and move accordingly
         else playerRigidyBody.velocity = rollDirection * ROLL_SPEED;
+    }
+
+    private void HandleAnimation()
+    {
+        playerAnimator.SetFloat("Speed", playerRigidyBody.velocity.magnitude);
+        
+        playerAnimator.SetBool("Rolling", rollBoolean);
+
+        if (!rollBoolean)
+        {
+
+            if (mousePosition.x > transform.position.x)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            else if (mousePosition.x < transform.position.x)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+        }
     }
 
     private void HandleCamera()
@@ -271,7 +299,6 @@ public class PlayerController : MonoBehaviour
             rollTimer = 0.0f;
 
             // Temporary until animations are added // Change the sprite of the player to show rolling
-            playerSpriteRenderer.color = Color.magenta;
         }
     }
 
@@ -311,7 +338,7 @@ public class PlayerController : MonoBehaviour
 
         // Rolling Timers
         if (rollBoolean) { rollTimer += Time.fixedDeltaTime; }
-        if (rollTimer >= ROLL_DURATION) { rollBoolean = false; playerSpriteRenderer.color = Color.red; gameObject.layer = LayerMask.NameToLayer("Player"); }
+        if (rollTimer >= ROLL_DURATION) { rollBoolean = false; gameObject.layer = LayerMask.NameToLayer("Player"); }
 
         // Contact Timer
         if (contactTimer <= contactTime)
@@ -319,7 +346,10 @@ public class PlayerController : MonoBehaviour
             contactTimer += Time.fixedDeltaTime;
         }
         
-
+        if (rollBoolean)
+        {
+            Debug.Log("Rolling");
+        }
     }
 
     private void HandleWeaponSwap()
@@ -419,7 +449,6 @@ public class PlayerController : MonoBehaviour
     public void SetInactive()
     {
         rollBoolean = false; 
-        playerSpriteRenderer.color = Color.red; 
         gameObject.layer = LayerMask.NameToLayer("Player");
         playerRigidyBody.velocity = Vector2.zero;
         isActive = false;

@@ -192,6 +192,11 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 8654597167622549013, guid: 24b7a2389bf63f746bf4231487ddab62,
+        type: 3}
+      propertyPath: ROLL_DURATION
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6575748312514212045, guid: 24b7a2389bf63f746bf4231487ddab62, type: 3}
     - {fileID: 7265281373271750220, guid: 24b7a2389bf63f746bf4231487ddab62, type: 3}
