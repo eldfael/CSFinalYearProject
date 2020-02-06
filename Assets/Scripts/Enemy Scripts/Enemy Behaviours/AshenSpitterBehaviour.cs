@@ -3,25 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
+public class AshenSpitterBehaviour : MonoBehaviour, EnemyBehaviour
 {
     GameObject playerObject;
-    Rigidbody2D enemyRigidBody;
+    Rigidbody2D enemyRigidbody;
 
-    public int MAXHP = 20;
+    public int MAXHP = 15;
     public int RES = 0;
     public int XPQUANTITY = 5;
     public bool MOVEABLE = true;
-    public int PATROLRANGE = 5;
-    
-
+    public int PATROLRANGE = 3;
+   
     Vector2 knockbackDirection;
     float knockbackTimer;
 
     float movementTimer = 0f;
     float movementTime;
     Vector2 movementDirection;
-    Vector2 initialPosition;
+    Vector2 patrolPosition;
 
     float idleTimer = 0f;
     float idleTime;
@@ -33,7 +32,7 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
     public void OnStart()
     {
         playerObject = GameObject.FindGameObjectWithTag("Player");
-        enemyRigidBody = GetComponent<Rigidbody2D>();
+        enemyRigidbody = GetComponent<Rigidbody2D>();
 
         if (Random.Range(0,2) == 1)
         {
@@ -45,7 +44,7 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
         }
 
         knockbackTimer = 0.1f;
-        initialPosition = transform.position;
+        patrolPosition = transform.position;
     }
 
     public void OnFixed()
@@ -64,7 +63,7 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
                     movementTime = Random.Range(1f, 2.5f);
                     movementDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 2f;
 
-                    if (((movementTime * movementDirection) + (Vector2)transform.position - initialPosition).magnitude <= PATROLRANGE)
+                    if (((movementTime * movementDirection) + (Vector2)transform.position - patrolPosition).magnitude <= PATROLRANGE)
                     {
                         RaycastHit2D[] hits = new RaycastHit2D[1];
                         GetComponent<CircleCollider2D>().Cast(movementDirection.normalized, hits, movementTime*2f);
@@ -88,7 +87,7 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
             if (movementTimer >= movementTime)
             {
                 idle = true;
-                if (Random.Range(0,2) == 1) { fired = false; }
+                fired = false;
                 movementTimer = 0f;
                 
                 idleTime = Random.Range(0.5f, 1f);
@@ -116,7 +115,7 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
                             new Vector2(0.6f, 0.6f), // Size of hitbox
                             LayerMask.GetMask("Player"),
                             (Vector2)transform.position + (new Vector2(x,y).normalized * 0.25f), // Position
-                            new Vector2(x,y).normalized * 7f, // Direction and Velocity
+                            new Vector2(x,y).normalized * 8f, // Direction and Velocity
                             2, // Damage
                             0f, // Knockback modifier
                             1f, // Duration
@@ -136,17 +135,16 @@ public class AshSpitterBehaviour : MonoBehaviour, EnemyBehaviour
         
         if (knockbackTimer < 0.1f)
         {
-            enemyRigidBody.velocity = knockbackDirection;
+            enemyRigidbody.velocity = knockbackDirection;
             knockbackTimer += Time.fixedDeltaTime;
         }
-        
         else if (idle)
         {
-            enemyRigidBody.velocity = Vector2.zero;
+            enemyRigidbody.velocity = Vector2.zero;
         }
         else
         {
-            enemyRigidBody.velocity = movementDirection;
+            enemyRigidbody.velocity = movementDirection;
         }
 
         if (idle && !fired)

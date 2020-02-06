@@ -28,7 +28,6 @@ public class SKIButtonController : MonoBehaviour
         {
             playerController.SetSKI(playerController.GetSKI() + 1);
             playerController.SetStatPoints(playerController.GetStatPoints() - 1);
-            Debug.Log("Agility Up");
         }
     }
 }
