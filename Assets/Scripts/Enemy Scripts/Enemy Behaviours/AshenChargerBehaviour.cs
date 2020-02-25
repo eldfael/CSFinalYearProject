@@ -60,7 +60,10 @@ public class AshenChargerBehaviour : MonoBehaviour, EnemyBehaviour
 
     public void OnContact(Collision2D collision)
     {
-        playerObject.GetComponent<PlayerController>().HandleContactDamage(2);
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            playerObject.GetComponent<PlayerController>().HandleContactDamage(2);
+        }
     }
 
     public void OnDeath()
@@ -161,13 +164,21 @@ public class AshenChargerBehaviour : MonoBehaviour, EnemyBehaviour
 
         if (movementTimer >= movementTime && !firing)
         {
-            Debug.Log("1");
+            
             detected = (playerObject.transform.position - transform.position).magnitude <= DETECTIONRANGE;
         }
         
         if (!detected && movementTimer >= movementTime)
         {
+            if (updatePatrolPosition)
+            {
+                updatePatrolPosition = false;
+                patrolPosition = transform.position;
+                Debug.Log("Patrol position updated");
+            }
+
             movementTimer = 0;
+            Debug.Log("Not Detected");
 
             bool loopBool = true;
             while (loopBool)
@@ -191,7 +202,7 @@ public class AshenChargerBehaviour : MonoBehaviour, EnemyBehaviour
         }
         else if (!firing && movementTimer >= movementTime)
         {
-            if (Random.Range(0,2) == 1)
+            if (Random.Range(0,3) == 1)
             {
                 firing = true;
                 fired = false;
@@ -226,11 +237,7 @@ public class AshenChargerBehaviour : MonoBehaviour, EnemyBehaviour
         {
             enemyRigidbody.velocity = Vector2.zero;
 
-            if (updatePatrolPosition)
-            {
-                updatePatrolPosition = false;
-                patrolPosition = transform.position;
-            }
+            
 
             if (firing)
             {
