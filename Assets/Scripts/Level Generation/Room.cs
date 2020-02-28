@@ -8,10 +8,138 @@ public class Room : MonoBehaviour
     Vector2 position;
     Vector2 size;
     LevelNode node;
+    public bool[] entrances = new bool[4];
+    
+    public List<GameObject> layouts = new List<GameObject>();
 
     private void Start()
     {
 
+    }
+
+    public void Create()
+    {
+        // CREATE THE LAYOUT FOR THE ROOM
+        int numOfEntrances = 0;
+        foreach (bool b in entrances)
+        {
+            if (b)
+            {
+                numOfEntrances += 1;
+            }
+        }
+        // IF 1 ENTRANCE
+        if (numOfEntrances == 1)
+        {
+            // IF NORTH
+            if (entrances[0])
+            {
+                Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_N"), transform);
+            }
+            // IF EAST
+            if (entrances[1])
+            {
+                Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_E"), transform);
+            }
+            // IF SOUTH
+            if (entrances[2])
+            {
+                Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_S"), transform);
+            }
+            // IF WEST
+            if (entrances[3])
+            {
+                Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_W"), transform);
+            }
+        }
+        // IF 2 ENTRANCES
+        else if (numOfEntrances == 2)
+        {
+            // IF NORTH
+            if (entrances[0])
+            {
+                // IF EAST
+                if (entrances[1])
+                {
+                    Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_NE"), transform);
+                }
+                // IF SOUTH
+                if (entrances[2])
+                {
+                    Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_NS"), transform);
+                }
+                // IF WEST
+                if (entrances[3])
+                {
+                    Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_NW"), transform);
+                }
+            }
+            // IF EAST
+            else if (entrances[1])
+            {
+                // IF SOUTH
+                if (entrances[2])
+                {
+                    Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_ES"), transform);
+                }
+                // IF WEST
+                if (entrances[3])
+                {
+                    Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_EW"), transform);
+                }
+            }
+            // IF NOT NORTH OR EAST MUST BE SOUTH AND WEST
+            else
+            {
+                Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_SW"), transform);
+            }
+        }
+        // IF 3 ENTRANCES
+        else if (numOfEntrances == 3)
+        {
+            // IF NORTH
+            if (entrances[0])
+            {
+                // IF EAST
+                if (entrances[1])
+                {
+                    // IF SOUTH
+                    if (entrances[2])
+                    {
+                        Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_NES"), transform);
+                    }
+                    // MUST BE WEST
+                    else
+                    {
+                        Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_NEW"), transform);
+                    }
+                }
+                // MUST BE SOUTH AND WEST
+                else
+                {
+                    Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_NSW"), transform);
+                }
+            }
+            // MUST BE ALL BUT NORTH
+            else
+            {
+                Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_ESW"), transform);
+            }
+        }
+        // MUST BE 4 ENTRANCES
+        else
+        {
+            Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_NESW"), transform);
+        }
+    }
+
+    public void SetEntrance(int i, bool b)
+    {
+        entrances[i] = b;
+    }
+    public bool GetEntrance(int i)
+    {
+        return entrances[i];
     }
 
     public RoomType GetRoomType()

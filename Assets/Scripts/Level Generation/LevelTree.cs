@@ -10,6 +10,9 @@ public class LevelTree : MonoBehaviour
     List<GameObject> roomList;
 
     LevelNode[,] nodeGrid;
+    public GameObject roomObject;
+
+    int ROOMSIZE = 16;
 
     private void Start()
     {
@@ -22,7 +25,7 @@ public class LevelTree : MonoBehaviour
         nodeList.Add(startNode);
 
         // Creating the longest route to the boss room
-        int maxDepth = Random.Range(5, 8);
+        int maxDepth = Random.Range(6, 9);
         for (int x = 0; x < maxDepth; x++)
         {   
             if (x < maxDepth - 1)
@@ -36,17 +39,40 @@ public class LevelTree : MonoBehaviour
             nodeList.Add(currentNode);
         }
 
+
+        // Create branches
+        for (int b = 0; b < Random.Range(1, 4); b++)
+        {
+            bool loop = true;
+            int branchDepth = 0;
+
+            while (loop)
+            {
+                branchDepth = Random.Range(1, 4);
+                currentNode = nodeList[Random.Range(1, maxDepth - 1)];
+
+                if (currentNode.GetDepth() + branchDepth <= maxDepth && currentNode.GetNumberOfChildren() > 0 && currentNode.GetNumberOfChildren() < 3)
+                {
+                    loop = false;
+                }
+            }
+
+            for (int x = 0; x < branchDepth; x++)
+            {
+                currentNode = currentNode.CreateChildNode(RoomType.NORMAL);
+                nodeList.Add(currentNode);
+            }
+        }
+        
+
         nodeGrid = new LevelNode[(maxDepth*2)+1,(maxDepth*2)+1];
 
         Vector2 pos = new Vector2(maxDepth, maxDepth);
 
         foreach (LevelNode node in nodeList)
         {
-            GameObject room = new GameObject();
-            
-            room.name = "Room";
-            room.AddComponent<Room>();
-            
+            GameObject room = Instantiate(roomObject);
+                       
             node.SetRoom(room);
 
             roomList.Add(room);
@@ -56,16 +82,66 @@ public class LevelTree : MonoBehaviour
                 pos = node.GetParentNode().GetPosition();
 
                 bool placed = false;
-                for (int x = 0; x < 20; x++) // Number of placement attempts before giving up
+                int maxAttempts = 20;
+                for (int x = 0; x < maxAttempts; x++) // Number of placement attempts before giving up
                 {
-
+                    int dir = Random.Range(0, 4);
+                    switch(dir)
+                    {
+                        case 0: // NORTH
+                            if(nodeGrid[(int)pos.x, (int)pos.y+1] == null)
+                            {
+                                pos = new Vector2(pos.x,pos.y+1);
+                                node.GetRoom().GetComponent<Room>().SetEntrance(2,true);
+                                node.GetParentNode().GetRoom().GetComponent<Room>().SetEntrance(0, true);
+                                x = maxAttempts;
+                                placed = true;
+                            }
+                            break;
+                        case 1: // EAST
+                            if (nodeGrid[(int)pos.x+1, (int)pos.y] == null)
+                            {
+                                pos = new Vector2(pos.x+1, pos.y);
+                                node.GetRoom().GetComponent<Room>().SetEntrance(3, true);
+                                node.GetParentNode().GetRoom().GetComponent<Room>().SetEntrance(1, true);
+                                x = maxAttempts;
+                                placed = true;
+                            }
+                            break;
+                        case 2: // SOUTH
+                            if (nodeGrid[(int)pos.x, (int)pos.y-1] == null)
+                            {
+                                pos = new Vector2(pos.x, pos.y-1);
+                                node.GetRoom().GetComponent<Room>().SetEntrance(0, true);
+                                node.GetParentNode().GetRoom().GetComponent<Room>().SetEntrance(2, true);
+                                x = maxAttempts;
+                                placed = true;
+                            }
+                            break;
+                        case 3: // WEST
+                            if (nodeGrid[(int)pos.x-1, (int)pos.y] == null)
+                            {
+                                pos = new Vector2(pos.x-1, pos.y);
+                                node.GetRoom().GetComponent<Room>().SetEntrance(1, true);
+                                node.GetParentNode().GetRoom().GetComponent<Room>().SetEntrance(3, true);
+                                x = maxAttempts;
+                                placed = true;
+                            }
+                            break;
+                    }
                 }
-
             }
+
 
             node.SetPosition(pos);
             nodeGrid[(int)pos.x,(int)pos.y] = node;
 
+        }
+
+        foreach(LevelNode node in nodeList)
+        {
+            node.GetRoom().transform.position = (node.GetPosition() - new Vector2(maxDepth,maxDepth)) * ROOMSIZE;
+            node.GetRoom().GetComponent<Room>().Create();
         }
 
         

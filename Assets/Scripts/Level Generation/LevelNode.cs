@@ -22,7 +22,7 @@ public class LevelNode
         nodeType = RoomType.START;
 
         childrenNodes = new List<LevelNode>();
-        depth = 0;
+        depth = 1;
     }
 
     public LevelNode(LevelNode _parentNode, RoomType _nodeType)
@@ -32,6 +32,7 @@ public class LevelNode
 
         childrenNodes = new List<LevelNode>();
         depth = parentNode.GetDepth() + 1;
+        Debug.Log(depth);
     }
 
     public LevelNode GetParentNode()
@@ -51,7 +52,7 @@ public class LevelNode
     }
     public int GetNumberOfChildren()
     {
-        return childrenNodes.Capacity;
+        return childrenNodes.Count;
     }
     public RoomType GetNodeType()
     {
