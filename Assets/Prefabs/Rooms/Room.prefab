@@ -43,7 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c69d0b6e2a9b1a488dbcda38c86cd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomType: 0
   entrances: 00000000
+  enemyCount: 0
   layouts:
   - {fileID: 422469245810869382, guid: 120e720e64c09794eadfbfb95b2f8e73, type: 3}
   - {fileID: 5467616081535217376, guid: 382708990067da443bb9f1a113a5628b, type: 3}
@@ -59,4 +61,15 @@ MonoBehaviour:
   - {fileID: 2975891704121529579, guid: 90cfc84f9ca0ea6479e3c1886631b992, type: 3}
   - {fileID: 5815428494043488978, guid: 3badb55f2d04d1245a1e94c164599c38, type: 3}
   - {fileID: 8285764035619098878, guid: b98cbc04f1f0ab04abc15b796c1d0ea7, type: 3}
-  - {fileID: 1430382266628494422, guid: dcc33ed6a95712c418a875a7d7417016, type: 3}
+  - {fileID: 1691233436025638517, guid: dcc33ed6a95712c418a875a7d7417016, type: 3}
+  normalContents:
+  - {fileID: 2751717931245605935, guid: e33eb672f3ace8944954320ee86b49b8, type: 3}
+  - {fileID: 5530780373221563367, guid: 97f394f77f5854d438c3bbc6ec3a7e35, type: 3}
+  - {fileID: 2821794769408730760, guid: fd9035a2ec2d7bb4c87d343a6a42de03, type: 3}
+  - {fileID: 2809644505738595576, guid: 255f17edc597af545b8d71e4179a0881, type: 3}
+  itemContents: []
+  bossContents:
+  - {fileID: 2624571761996546318, guid: 040a42c0540711c47b3d1e94729e6539, type: 3}
+  startContents:
+  - {fileID: 6005882148406460069, guid: 002adbc528b6e154daca602164c4a984, type: 3}
+  debug: 0

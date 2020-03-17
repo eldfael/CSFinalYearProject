@@ -32,7 +32,6 @@ public class LevelNode
 
         childrenNodes = new List<LevelNode>();
         depth = parentNode.GetDepth() + 1;
-        Debug.Log(depth);
     }
 
     public LevelNode GetParentNode()

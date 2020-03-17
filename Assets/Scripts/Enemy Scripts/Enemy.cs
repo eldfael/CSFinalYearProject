@@ -14,15 +14,12 @@ public class Enemy : MonoBehaviour
     int enemy_CurrentHP;
     int enemy_END;
 
-    LevelController levelController;
+    Room room;
 
     private void Start()
     {
         // Get the behaviour script attached to this gameobject
         enemyBehaviour = GetComponent<EnemyBehaviour>();
-
-        levelController = GameObject.Find("Level Controller").GetComponent<LevelController>();
-        levelController.SetEnemyCount(levelController.GetEnemyCount() + 1);
         
         // Get the enemy's max HP and set it's current HP to that value
         enemy_MaxHP = enemyBehaviour.GetMaxHP();
@@ -34,6 +31,8 @@ public class Enemy : MonoBehaviour
         // Run the enemy's start method
         enemyBehaviour.OnStart();
 
+        room = transform.parent.GetComponent<Room>();
+        room.enemyCount++;
 
     }
 
@@ -72,14 +71,14 @@ public class Enemy : MonoBehaviour
             }
         }
 
+        room.enemyCount--;
+        if (room.enemyCount == 0)
+        {
+            room.CompleteRoom();
+        }
+
         // Spawn XP orbs on enemy location then destroy the enemy game object
         for (int x = 0; x < enemyBehaviour.GetXPQuantity(); x++) { Instantiate(xpOrb,transform.position,Quaternion.identity); }
-
-        levelController.SetEnemyCount(levelController.GetEnemyCount() - 1);
-        if (levelController.GetEnemyCount() <= 0)
-        {
-            levelController.SpawnPortal(transform.position);
-        }
 
         Destroy(gameObject);
     }

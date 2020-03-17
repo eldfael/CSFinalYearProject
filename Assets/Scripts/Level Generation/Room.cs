@@ -4,16 +4,39 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    RoomType roomType;
+    public RoomType roomType;
+
     Vector2 position;
     Vector2 size;
     LevelNode node;
     public bool[] entrances = new bool[4];
-    
+    bool active = false;
+    bool completed = false;
+    public int enemyCount = 0;
+
     public List<GameObject> layouts = new List<GameObject>();
+    
+    public List<GameObject> normalContents = new List<GameObject>();
+    public List<GameObject> itemContents = new List<GameObject>();
+    public List<GameObject> bossContents = new List<GameObject>();
+    public List<GameObject> startContents = new List<GameObject>();
+
+
+    public bool debug;
 
     private void Start()
     {
+        if (debug)
+        {
+            roomType = RoomType.NORMAL;
+            Create();
+        }
+        
+        if (roomType == RoomType.START || roomType == RoomType.BOSS || roomType == RoomType.ITEM)
+        {
+            completed = true;
+        }
+
 
     }
 
@@ -131,6 +154,29 @@ public class Room : MonoBehaviour
         {
             Instantiate(layouts.Find(GameObject => GameObject.name == "Layout_NESW"), transform);
         }
+        
+        // CREATE THE CONTENTS OF THE ROOM AFTER LAYOUT HAS BEEN CREATED
+        switch(roomType)
+        {
+            case RoomType.NORMAL:
+                Instantiate(normalContents[Random.Range(0, normalContents.Count)], transform);
+                break;
+
+            // CURRENTLY EMPTY
+            case RoomType.ITEM:   
+                //Instantiate(itemContents[Random.Range(0, itemContents.Count)], transform);
+                break;
+
+            case RoomType.START:
+                Instantiate(startContents[Random.Range(0, startContents.Count)], transform);
+                break;
+
+            case RoomType.BOSS:
+                Instantiate(bossContents[Random.Range(0, bossContents.Count)], transform);
+                break;
+        }
+
+
     }
 
     public void SetEntrance(int i, bool b)
@@ -173,6 +219,25 @@ public class Room : MonoBehaviour
     public LevelNode GetNode()
     {
         return node;
+    }
+
+    public bool IsActive()
+    {
+        return active;
+    }
+    public bool IsCompleted()
+    {
+        return completed;
+    }
+
+    public void ActivateRoom()
+    {
+        active = true;
+    }
+
+    public void CompleteRoom()
+    {
+        completed = true;
     }
 
 }
