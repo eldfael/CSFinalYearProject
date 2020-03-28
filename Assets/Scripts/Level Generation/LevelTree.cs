@@ -11,6 +11,7 @@ public class LevelTree : MonoBehaviour
 
     LevelNode[,] nodeGrid;
     public GameObject roomObject;
+    GameObject gameController;
 
     int ROOMSIZE = 26;
 
@@ -23,6 +24,9 @@ public class LevelTree : MonoBehaviour
 
         nodeList = new List<LevelNode>();
         nodeList.Add(startNode);
+
+        gameController = GameObject.Find("Game Controller");
+        //Debug.Log(gameController);
 
         // Creating the longest route to the boss room
         int maxDepth = Random.Range(6, 9);
@@ -41,7 +45,7 @@ public class LevelTree : MonoBehaviour
 
         
         // Create branches
-        for (int b = 0; b < Random.Range(1, 4); b++)
+        for (int b = 0; b < Random.Range(2, 4); b++)
         {
             bool loop = true;
             int branchDepth = 0;
@@ -144,6 +148,18 @@ public class LevelTree : MonoBehaviour
                 Destroy(node.GetRoom());
                 Debug.Log("ROOM MIS-PLACED");
 
+            }
+        }
+
+        // PLACE ITEM ROOMS
+        int counter = 0;
+        foreach(LevelNode node in nodeList)
+        {
+            if (node.GetNodeType() == RoomType.NORMAL && node.GetNumberOfChildren() == 0 && counter < 2)
+            {
+                node.GetRoom().GetComponent<Room>().SetRoomType(RoomType.ITEM);
+                Debug.Log("PLACED ITEM ROOM");
+                counter++;
             }
         }
 

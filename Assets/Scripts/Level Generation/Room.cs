@@ -21,6 +21,7 @@ public class Room : MonoBehaviour
     public List<GameObject> bossContents = new List<GameObject>();
     public List<GameObject> startContents = new List<GameObject>();
 
+    GameObject gameController;
 
     public bool debug;
 
@@ -37,11 +38,13 @@ public class Room : MonoBehaviour
             completed = true;
         }
 
-
+        
     }
 
     public void Create()
     {
+        gameController = GameObject.Find("Game Controller");
+
         // CREATE THE LAYOUT FOR THE ROOM
         int numOfEntrances = 0;
         foreach (bool b in entrances)
@@ -162,13 +165,20 @@ public class Room : MonoBehaviour
                 Instantiate(normalContents[Random.Range(0, normalContents.Count)], transform);
                 break;
 
-            // CURRENTLY EMPTY
             case RoomType.ITEM:   
-                //Instantiate(itemContents[Random.Range(0, itemContents.Count)], transform);
+                Instantiate(itemContents[Random.Range(0, itemContents.Count)], transform);
                 break;
 
             case RoomType.START:
-                Instantiate(startContents[Random.Range(0, startContents.Count)], transform);
+                if (gameController.GetComponent<GameController>().GetLevelPointer() == 0)
+                {
+                    Instantiate(startContents[0], transform);
+                }
+                else
+                {
+                    Instantiate(startContents[1], transform);
+                }
+                
                 break;
 
             case RoomType.BOSS:

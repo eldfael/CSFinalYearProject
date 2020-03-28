@@ -275,6 +275,7 @@ public class PlayerController : MonoBehaviour
 
                 if (collider.CompareTag("Portal"))
                 {
+                    stat_CurrentHP = stat_MaxHP;
                     gameController.SwapScene();
                 }
             }

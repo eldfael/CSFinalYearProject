@@ -6,11 +6,13 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     GameObject playerObject;
+    int levelPointer;
     void Start()
     {
         DontDestroyOnLoad(gameObject);
         playerObject = GameObject.FindGameObjectWithTag("Player");
         SceneManager.sceneLoaded += OnSceneLoaded;
+        levelPointer = 0;
     }
 
     private void Update()
@@ -46,8 +48,14 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadSceneAsync("Level1");
+            levelPointer++;
+            SceneManager.LoadSceneAsync("Level");
         }
+    }
+
+    public int GetLevelPointer()
+    {
+        return levelPointer;
     }
 
 }
