@@ -9,6 +9,7 @@ public class Room : MonoBehaviour
     Vector2 position;
     Vector2 size;
     LevelNode node;
+    public int depth;
     public bool[] entrances = new bool[4];
     bool active = false;
     bool completed = false;
@@ -38,6 +39,7 @@ public class Room : MonoBehaviour
             completed = true;
         }
 
+
         
     }
 
@@ -46,14 +48,8 @@ public class Room : MonoBehaviour
         gameController = GameObject.Find("Game Controller");
 
         // CREATE THE LAYOUT FOR THE ROOM
-        int numOfEntrances = 0;
-        foreach (bool b in entrances)
-        {
-            if (b)
-            {
-                numOfEntrances += 1;
-            }
-        }
+        int numOfEntrances = GetNumberOfEntrances();
+
         // IF 1 ENTRANCE
         if (numOfEntrances == 1)
         {
@@ -248,6 +244,19 @@ public class Room : MonoBehaviour
     public void CompleteRoom()
     {
         completed = true;
+    }
+
+    public int GetNumberOfEntrances()
+    {
+        int numOfEntrances = 0;
+        foreach (bool b in entrances)
+        {
+            if (b)
+            {
+                numOfEntrances += 1;
+            }
+        }
+        return numOfEntrances;
     }
 
 }

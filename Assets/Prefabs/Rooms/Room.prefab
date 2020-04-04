@@ -74,7 +74,7 @@ MonoBehaviour:
   - {fileID: 3493534238511666552, guid: 83ae0366bb3ec234bbca474e0d4923da, type: 3}
   - {fileID: 5108675274558930861, guid: 74ffd12063ead354e913edd9d7cfc657, type: 3}
   itemContents:
-  - {fileID: 7694791903196786348, guid: 2fea10cc4295c654d89c61ec20054b64, type: 3}
+  - {fileID: 6486012309685894335, guid: 119643f62afa7f44fac4a9ac91093b11, type: 3}
   bossContents:
   - {fileID: 2624571761996546318, guid: 040a42c0540711c47b3d1e94729e6539, type: 3}
   startContents:

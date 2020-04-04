@@ -7,12 +7,14 @@ public class GameController : MonoBehaviour
 {
     GameObject playerObject;
     int levelPointer;
+    public int difficulty;
     void Start()
     {
         DontDestroyOnLoad(gameObject);
         playerObject = GameObject.FindGameObjectWithTag("Player");
         SceneManager.sceneLoaded += OnSceneLoaded;
         levelPointer = 0;
+        difficulty = 0;
     }
 
     private void Update()
@@ -49,6 +51,7 @@ public class GameController : MonoBehaviour
         else
         {
             levelPointer++;
+            difficulty++;
             SceneManager.LoadSceneAsync("Level");
         }
     }
@@ -58,4 +61,8 @@ public class GameController : MonoBehaviour
         return levelPointer;
     }
 
+    public int GetDifficulty()
+    {
+        return difficulty;
+    }
 }

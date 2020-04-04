@@ -9,6 +9,7 @@ TagManager:
   - Projectile
   - Portal
   - Weapon
+  - Item
   layers:
   - Default
   - TransparentFX

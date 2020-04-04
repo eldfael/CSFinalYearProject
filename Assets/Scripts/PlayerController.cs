@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     Animator playerAnimator;
 
     GameObject[] weapons = new GameObject[2];
+    public List<string> items = new List<string>();
+
     Weapon currentWeapon;
     int currentWeaponIndex = 0;
 
@@ -24,6 +26,7 @@ public class PlayerController : MonoBehaviour
     // Stats Decleration
     int stat_MaxHP;
     int stat_CurrentHP;
+    int stat_BonusHP = 0;
 
     float contactTime = 0.5f;
     float contactTimer = 0.5f;
@@ -278,6 +281,11 @@ public class PlayerController : MonoBehaviour
                     stat_CurrentHP = stat_MaxHP;
                     gameController.SwapScene();
                 }
+
+                if (collider.CompareTag("Item"))
+                {
+                    HandleItemPickup(collider);
+                }
             }
         }
     }
@@ -364,9 +372,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void HandleItemPickup(Collider2D collider)
+    {
+        items.Add(collider.gameObject.GetComponent<Item>().GetName());
+        collider.gameObject.GetComponent<Item>().OnPickup();
+        Destroy(collider.gameObject);
+    }
+
     public void HandleDamage(int damage)
     {
-        stat_CurrentHP -= damage - stat_END;
+        stat_CurrentHP -= Mathf.Clamp(damage - stat_END,1,damage);
         HandleHP();
     }
 
@@ -478,9 +493,7 @@ public class PlayerController : MonoBehaviour
 
         // Updates variables based on current player stats
 
-        stat_MaxHP = 5 + stat_VIT;
-
-
+        stat_MaxHP = 5 + stat_VIT + stat_BonusHP;
     }
 
     public void HandleContactDamage(int damage) {
@@ -489,6 +502,18 @@ public class PlayerController : MonoBehaviour
             HandleDamage(damage);
             contactTimer = 0;
         }
+    }
+
+    public bool HasItem(string itemName)
+    {
+        foreach (string item in items) 
+        { 
+            if (item == itemName)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Get methods for variables
@@ -502,6 +527,7 @@ public class PlayerController : MonoBehaviour
     public int GetTotalXP() { return stat_TotalXP; }
     public int GetCurrentHP() { return stat_CurrentHP; }
     public int GetMaxHP() { return stat_MaxHP; }
+    public int GetBonusHP() { return stat_BonusHP; }
     public GameObject GetWeapon() { return weapons[currentWeaponIndex]; }
 
     // Set methods for variables
@@ -511,6 +537,8 @@ public class PlayerController : MonoBehaviour
     public void SetHEA(int newHEA) { stat_HEA = newHEA; }
     public void SetVIT(int newVIT) { stat_VIT = newVIT; }
     public void SetEND(int newEND) { stat_END = newEND; }
+    public void SetBonusHP(int newBonusHP) { stat_BonusHP = newBonusHP; }
+    public void SetCurrentHP(int newCurrentHP) { stat_CurrentHP = newCurrentHP; }
     public void SetLevel(int newLevel) { stat_Level = newLevel; }
 
 

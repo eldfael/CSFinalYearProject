@@ -9,14 +9,17 @@ public class DoorTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player")) {  
+        if (collision.CompareTag("Player"))
+        {
             if (!room.IsCompleted() && !room.IsActive())
             {
                 room.ActivateRoom();
             }
+            else if (room.GetRoomType() == RoomType.ITEM)
+            {
+                room.ActivateRoom();
+            }
         }
-        
-
     }
 
     public void Start()

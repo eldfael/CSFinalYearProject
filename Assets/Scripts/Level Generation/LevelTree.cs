@@ -6,12 +6,12 @@ public class LevelTree : MonoBehaviour
 {
     LevelNode startNode;
     LevelNode currentNode;
-    List<LevelNode> nodeList;
-    List<GameObject> roomList;
+    public List<LevelNode> nodeList;
+    public List<GameObject> roomList;
 
     LevelNode[,] nodeGrid;
     public GameObject roomObject;
-    GameObject gameController;
+    GameController gameController;
 
     int ROOMSIZE = 26;
 
@@ -25,11 +25,11 @@ public class LevelTree : MonoBehaviour
         nodeList = new List<LevelNode>();
         nodeList.Add(startNode);
 
-        gameController = GameObject.Find("Game Controller");
+        gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
         //Debug.Log(gameController);
 
         // Creating the longest route to the boss room
-        int maxDepth = Random.Range(6, 9);
+        int maxDepth = Random.Range(4 + gameController.GetDifficulty() / 2, 7 + gameController.GetDifficulty() / 2);
         for (int x = 0; x < maxDepth; x++)
         {   
             if (x < maxDepth - 1)
@@ -45,7 +45,7 @@ public class LevelTree : MonoBehaviour
 
         
         // Create branches
-        for (int b = 0; b < Random.Range(2, 4); b++)
+        for (int b = 0; b < Random.Range(2, 2 + gameController.GetDifficulty() / 2); b++)
         {
             bool loop = true;
             int branchDepth = 0;
@@ -78,7 +78,8 @@ public class LevelTree : MonoBehaviour
             GameObject room = Instantiate(roomObject);
 
             room.GetComponent<Room>().SetRoomType(node.GetNodeType());
-
+            
+            room.GetComponent<Room>().SetNode(node);
             node.SetRoom(room);
 
             roomList.Add(room);
@@ -145,19 +146,46 @@ public class LevelTree : MonoBehaviour
 
             if (!placed && node.GetNodeType() != RoomType.START)
             {
+                roomList.Remove(node.GetRoom());
                 Destroy(node.GetRoom());
                 Debug.Log("ROOM MIS-PLACED");
+                
 
             }
         }
 
+        
+        bool foundbossroom = false;
+        foreach (GameObject room in roomList)
+        {
+            if(room.GetComponent<Room>().GetRoomType() == RoomType.BOSS)
+            {
+                foundbossroom = true;
+                break;
+            }
+        }
+        if (!foundbossroom)
+        {
+            LevelNode node = roomList[0].GetComponent<Room>().GetNode();
+            foreach(GameObject room in roomList)
+            {
+                if (room.GetComponent<Room>().GetNode().GetDepth() > node.GetDepth())
+                {
+                    node = room.GetComponent<Room>().GetNode();
+                }
+                
+            }
+            node.GetRoom().GetComponent<Room>().SetRoomType(RoomType.BOSS);
+        }
+        
+
         // PLACE ITEM ROOMS
         int counter = 0;
-        foreach(LevelNode node in nodeList)
+        foreach(GameObject room in roomList)
         {
-            if (node.GetNodeType() == RoomType.NORMAL && node.GetNumberOfChildren() == 0 && counter < 2)
+            if (room.GetComponent<Room>().GetRoomType() == RoomType.NORMAL && room.GetComponent<Room>().GetNumberOfEntrances() == 1 && counter < 2 + gameController.GetDifficulty()/2)
             {
-                node.GetRoom().GetComponent<Room>().SetRoomType(RoomType.ITEM);
+                room.GetComponent<Room>().SetRoomType(RoomType.ITEM);
                 Debug.Log("PLACED ITEM ROOM");
                 counter++;
             }

@@ -116,7 +116,7 @@ public class AshenSpitterBehaviour : MonoBehaviour, EnemyBehaviour
                             LayerMask.GetMask("Player"),
                             (Vector2)transform.position + (new Vector2(x,y).normalized * 0.25f), // Position
                             new Vector2(x,y).normalized * 8f, // Direction and Velocity
-                            2, // Damage
+                            GameObject.Find("Game Controller").GetComponent<GameController>().difficulty / 2 + 2, // Damage
                             0f, // Knockback modifier
                             1f, // Duration
                             false // Melee Weapon

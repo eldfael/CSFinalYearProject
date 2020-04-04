@@ -62,7 +62,7 @@ public class AshenChargerBehaviour : MonoBehaviour, EnemyBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            playerObject.GetComponent<PlayerController>().HandleContactDamage(2);
+            playerObject.GetComponent<PlayerController>().HandleContactDamage(GameObject.Find("Game Controller").GetComponent<GameController>().difficulty / 2 + 2);
         }
     }
 
@@ -266,7 +266,7 @@ public class AshenChargerBehaviour : MonoBehaviour, EnemyBehaviour
                             LayerMask.GetMask("Player"),
                             (Vector2)transform.position + new Vector2(Mathf.Cos((x * 0.3f) + Vector2.SignedAngle(Vector2.right, shootDirection) * Mathf.Deg2Rad), Mathf.Sin((x * 0.3f) + Vector2.SignedAngle(Vector2.right, shootDirection) * Mathf.Deg2Rad)).normalized * 0.25f, // Position
                             new Vector2(Mathf.Cos((x * 0.3f) + Vector2.SignedAngle(Vector2.right, shootDirection) * Mathf.Deg2Rad), Mathf.Sin((x * 0.3f) + Vector2.SignedAngle(Vector2.right, shootDirection) * Mathf.Deg2Rad)).normalized * 8f, // Direction and Velocity
-                            2, // Damage
+                            GameObject.Find("Game Controller").GetComponent<GameController>().difficulty / 2 + 2, // Damage
                             0f, // Knockback modifier
                             1.5f, // Duration
                             false // Melee Weapon

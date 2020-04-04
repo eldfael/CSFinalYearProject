@@ -10,6 +10,10 @@ public class ActiveSpawner : MonoBehaviour
     private void Start()
     {
         room = transform.parent.parent.GetComponent<Room>();
+        if (room.GetRoomType() == RoomType.ITEM || room.GetRoomType() == RoomType.START)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void FixedUpdate()
