@@ -28,6 +28,7 @@ public class VITButtonController : MonoBehaviour
         {
             playerController.SetVIT(playerController.GetVIT() + 1);
             playerController.SetStatPoints(playerController.GetStatPoints() - 1);
+            playerController.SetCurrentHP(playerController.GetCurrentHP() + 1);
             Debug.Log("Vitality Up");
         }
     }

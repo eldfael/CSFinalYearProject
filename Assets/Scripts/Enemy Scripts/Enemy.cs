@@ -47,6 +47,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
+
             // Run the enemy's main behaviour method
             enemyBehaviour.OnFixed();
         }

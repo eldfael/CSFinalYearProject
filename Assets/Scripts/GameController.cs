@@ -19,25 +19,26 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKey(KeyCode.R))
         {
-
-            playerObject.GetComponent<PlayerController>().HandleXPGain(5);
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.LoadScene("StartLevel");
+            Destroy(gameObject);
         }
-
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    { 
-        playerObject.transform.position = Vector2.zero;
-        if (scene.name == "LevelUp")
+    {
         {
-            playerObject.GetComponent<PlayerController>().SetInactive();
-        }
-        else
-        {
-            playerObject.GetComponent<PlayerController>().SetActive();
+            playerObject.transform.position = Vector2.zero;
+            if (scene.name == "LevelUp")
+            {
+                playerObject.GetComponent<PlayerController>().SetInactive();
+            }
+            else
+            {
+                playerObject.GetComponent<PlayerController>().SetActive();
+            }
         }
     }
 
@@ -46,7 +47,8 @@ public class GameController : MonoBehaviour
         if (playerObject.GetComponent<PlayerController>().GetStatPoints() >= 1)
         {
             SceneManager.LoadSceneAsync("LevelUp");
-            
+            playerObject.transform.position = Vector2.zero;
+
         }
         else
         {

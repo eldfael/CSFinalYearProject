@@ -100,7 +100,7 @@ public class WeaponNeedle : MonoBehaviour, Weapon
             LayerMask.GetMask("Enemy"),
             new Vector2(playerObject.transform.position.x, playerObject.transform.position.y) + (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized * (3 * hitbox.x / 4), // Position
             (mousePosition - new Vector2(playerObject.transform.position.x, playerObject.transform.position.y)).normalized * speed, // Direction and Velocity
-            damage + (playerObject.GetComponent<PlayerController>().GetSKI() / 2), // Damage
+            damage + (playerObject.GetComponent<PlayerController>().GetSKI()), // Damage
             knockback, // Knockback modifier
             duration, // Duration
             melee // Melee Weapon

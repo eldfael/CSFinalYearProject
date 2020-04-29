@@ -218,6 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f05aa62c35d183e4fa099e67125db2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomList: []
   roomObject: {fileID: 7327421760387903072, guid: aff42cd0f5187544f9336d09e80802d1,
     type: 3}
 --- !u!4 &1988362930
