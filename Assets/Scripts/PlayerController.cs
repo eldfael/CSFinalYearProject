@@ -61,11 +61,8 @@ public class PlayerController : MonoBehaviour
     public float PROJECTILE_SPEED = 15f;
     public float ATTACK_DURATION = 0.5f;
 
-    float attackTimer = 0.0f;
     bool attackKeyHeld;
     bool attackKeyDown;
-    bool attackBoolean = false;
-
     bool interactKeyDown;
 
     bool attackNext;
@@ -340,10 +337,6 @@ public class PlayerController : MonoBehaviour
     {
         // Called in FixedUpdate
 
-        // Attacking Timers
-        // If the player is attacking
-        if (attackBoolean) { attackTimer += Time.fixedDeltaTime; }
-        if (attackTimer >= ATTACK_DURATION / ((float)stat_AGI / 5)) { attackBoolean = false; }
 
         // Rolling Timers
         if (rollBoolean) { rollTimer += Time.fixedDeltaTime; }
